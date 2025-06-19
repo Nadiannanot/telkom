@@ -34,16 +34,21 @@ class Auth extends CI_Controller
 
 	private function _login()
 	{
-		$email = $this->input->post('email');
-		$password = $this->input->post('password');
+		$email = $this->input->post('email', true);
+		$password = $this->input->post('password', true);
 
 		$user = $this->db->get_where('user', ['email' => $email])->row_array();
+		var_dump($email);
+		var_dump($user);
+		die;
 
 		if ($user) {
-			// Jika user aktif
 			if ($user['is_active'] == 1) {
-				// Cek password
 				if (password_verify($password, $user['password'])) {
+					// Reset session sebelum set_userdata
+					$this->session->sess_destroy();
+					// Inisialisasi ulang session library
+					$this->load->library('session');
 					$data = [
 						'email' => $user['email'],
 						'role_id' => $user['role_id'],
