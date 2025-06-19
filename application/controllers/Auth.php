@@ -38,17 +38,12 @@ class Auth extends CI_Controller
 		$password = $this->input->post('password', true);
 
 		$user = $this->db->get_where('user', ['email' => $email])->row_array();
-		var_dump($email);
-		var_dump($user);
-		die;
+
 
 		if ($user) {
 			if ($user['is_active'] == 1) {
 				if (password_verify($password, $user['password'])) {
-					// Reset session sebelum set_userdata
-					$this->session->sess_destroy();
-					// Inisialisasi ulang session library
-					$this->load->library('session');
+					// HAPUS sess_destroy dan load library session di sini
 					$data = [
 						'email' => $user['email'],
 						'role_id' => $user['role_id'],

@@ -5,9 +5,8 @@ class Admin extends CI_Controller
 {
 	public function index()
 	{
-		// Ambil data user dari session
 		$email = $this->session->userdata('email');
-		$data['user'] = $this->db->get('user', ['email' => $this->session->set_userdata('email')])->row_array();
+		$data['user'] = $this->db->get_where('user', ['email' => $email])->row_array();
 		$data['title'] = 'Dashboard';
 
 		$this->load->view('templates/header', $data);
