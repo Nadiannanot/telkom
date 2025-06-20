@@ -43,12 +43,8 @@ class Auth extends CI_Controller
 		if ($user) {
 			if ($user['is_active'] == 1) {
 				if (password_verify($password, $user['password'])) {
-<<<<<<< HEAD
 					
-					$this->load->library('session');
-=======
-					// HAPUS sess_destroy dan load library session di sini
->>>>>>> 63ec1f37d301d47fd2bbcd4cc4abdc0aff8835d2
+					
 					$data = [
 						'email' => $user['email'],
 						'role_id' => $user['role_id'],

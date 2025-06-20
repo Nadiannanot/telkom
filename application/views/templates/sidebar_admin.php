@@ -31,14 +31,14 @@
 
 	<!-- Heading -->
 	<div class="sidebar-heading">
-		USER
+		MASTER OPERASIONAL
 	</div>
 
-	<!-- Nav Item - Pages Collapse Menu -->
+	<!-- Nav Item - Pages Collapse Menu --> 
 	<li class="nav-item">
-		<a class="nav-link" href="<?= base_url('user/profile'); ?>">
+		<a class="nav-link" href="<?= base_url('order'); ?>">
 			<i class="fas fa-fw fa-cog"></i>
-			<span>MY PROFILE</span>
+			<span>DATA ORDER</span>
 		</a>
 
 		<!-- Divider -->

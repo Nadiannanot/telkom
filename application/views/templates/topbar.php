@@ -57,12 +57,7 @@
 					<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
 						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 						<span class="mr-2 d-none d-lg-inline text-gray-600 small"><?= $user['name']; ?></span>
-<<<<<<< HEAD
-						<img src="<?= base_url('assets/img/profile/' . ($user['foto'] ?? 'default.jpg')); ?>" class="img-thumbnail"  style="width: 40px; height: 40px; object-fit: cover;">
-=======
-						<img src="<?= base_url('assets/img/profile/' . ($user['foto'] ?? 'default.jpg')); ?>" class="img-thumbnail" width="60" height="60"
-							alt="User Profile Picture">
->>>>>>> 63ec1f37d301d47fd2bbcd4cc4abdc0aff8835d2
+						<img src="<?= base_url('assets/img/profile/' . ($user['foto'] ?? 'default.jpg')); ?>" class="img-thumbnail"  style="width: 100px; height: 60px; object-fit: cover;">
 
 					</a>
 					<!-- Dropdown - User Information -->
