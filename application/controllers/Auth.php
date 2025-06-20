@@ -45,9 +45,7 @@ class Auth extends CI_Controller
 		if ($user) {
 			if ($user['is_active'] == 1) {
 				if (password_verify($password, $user['password'])) {
-					// Reset session sebelum set_userdata
-					$this->session->sess_destroy();
-					// Inisialisasi ulang session library
+					
 					$this->load->library('session');
 					$data = [
 						'email' => $user['email'],
@@ -131,4 +129,3 @@ class Auth extends CI_Controller
 		redirect('auth');
 	}
 }
-///
