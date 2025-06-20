@@ -1,0 +1,6 @@
+git add .     -> untuk menandai file yang sudah ada perubahan
+git commit -m "nama commit"    -> untuk menamai perubahan yang di lakukan
+git push -u origin main     -> untuk mengupload perubahan ke repositry
+
+
+git pull     -> untuk mengambil perubahan dari main repos di github

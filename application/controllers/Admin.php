@@ -6,12 +6,10 @@ class Admin extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		// Cek apakah user sudah login
+	
 		if (!$this->session->userdata('email')) {
 			redirect('auth');
 		}
-
-		// Cek apakah user adalah admin
 		if ($this->session->userdata('role_id') != 1) {
 			redirect('user');
 		}
@@ -30,3 +28,4 @@ class Admin extends CI_Controller
 		$this->load->view('templates/footer');
 	}
 }
+///
