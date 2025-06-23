@@ -31,14 +31,14 @@
 
 	<!-- Heading -->
 	<div class="sidebar-heading">
-		MASTER OPERASIONAL
+		karepe
 	</div>
 
-	<!-- Nav Item - Pages Collapse Menu --> 
+	<!-- Nav Item - Pages Collapse Menu -->
 	<li class="nav-item">
-		<a class="nav-link" href="<?= base_url('order'); ?>">
+		<a class="nav-link" href="<?= base_url('admin'); ?>">
 			<i class="fas fa-fw fa-cog"></i>
-			<span>DATA ORDER</span>
+			<span>DATA</span>
 		</a>
 
 		<!-- Divider -->
@@ -46,16 +46,15 @@
 
 		<!-- Nav Item - Pages Collapse Menu -->
 	<li class="nav-item">
-		<a class="nav-link collapsed" href=" ?= base_url('') ?> " data-toggle="collapse" data-target="#collapseTwo"
-			aria-expanded="true" aria-controls="collapseTwo">
+		<a class="nav-link collapsed" href=" ?= base_url('') ?> " data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" style="text-decoration: none; display: flex; align-items: center;">
 			<i class="fas fa-fw fa-cog"></i>
-			<span>logout</span>
+			<span>MASTER OPERASIONAL</span>
 		</a>
 
 		<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
 			<div class="bg-white py-2 collapse-inner rounded">
-				<h6 class="collapse-header">Custom Components:</h6>
-				<a class="collapse-item" href="buttons.html">Buttons</a>
+				<!-- <h6 class="collapse-header">Custom Components:</h6> -->
+				<a class="collapse-item" href="<?= base_url('order')?>">Data Order</a>
 				<a class="collapse-item" href="cards.html">Cards</a>
 			</div>
 		</div>

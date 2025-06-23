@@ -39,11 +39,17 @@ class Order extends CI_Controller
 
 	public function tambah()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Tambah Order',
-			'page'  => 'order/v_addorder'
+			'page'  => 'order/v_addorder',
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('order/v_addorder', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postTambah()
@@ -80,12 +86,18 @@ class Order extends CI_Controller
 	{
 		$order = $this->order->getOrderById($id);
 		if (!$order) show_404();
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Edit Order',
 			'page'  => 'order/v_editorder',
-			'order' => $order
+			'order' => $order,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array()
 		];
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('order/v_editorder', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function update()
