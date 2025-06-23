@@ -9,9 +9,11 @@ class Ibooster extends CI_Controller
 	{
 		parent::__construct();
 
-		if (empty($this->session->userdata('user_login'))) {
-			$this->session->set_flashdata('error', 'Anda belum login');
-			redirect('login', 'refresh');
+		if (!$this->session->userdata('email')) {
+			redirect('auth');
+		}
+		if ($this->session->userdata('role_id') != 1) {
+			redirect('user');
 		}
 
 		$this->load->model('M_Ibooster', 'ibooster');
@@ -19,24 +21,36 @@ class Ibooster extends CI_Controller
 
 	public function index()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title'    => 'Data Ibooster',
 			'page'     => 'ibooster/v_ibooster',
-			'ibooster' => $this->ibooster->getAllIbooster()
+			'ibooster' => $this->ibooster->getAllIbooster(),
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('ibooster/v_ibooster', $data);
+		$this->load->view('templates/footer');
 	}
 
 
 	public function add()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Tambah Data Ibooster',
-			'page'  => 'ibooster/v_addIbooster'
+			'page'  => 'ibooster/v_addIbooster',
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('ibooster/v_addIbooster', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postAdd()
@@ -200,6 +214,7 @@ class Ibooster extends CI_Controller
 		}
 	}
 
+
 	public function edit($id)
 	{
 		$ibooster = $this->ibooster->getIboosterById($id);
@@ -207,14 +222,21 @@ class Ibooster extends CI_Controller
 			show_404();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title'    => 'Edit Data iBooster',
 			'page'     => 'ibooster/v_editIbooster',
-			'ibooster' => $ibooster
+			'ibooster' => $ibooster,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('ibooster/v_editIbooster', $data);
+		$this->load->view('templates/footer');
 	}
+
 
 	public function update()
 	{
@@ -393,60 +415,60 @@ class Ibooster extends CI_Controller
 	}
 
 	public function upload_excel()
-{
-    if (!empty($_FILES['file_excel']['name'])) {
-        $file = $_FILES['file_excel']['tmp_name'];
+	{
+		if (!empty($_FILES['file_excel']['name'])) {
+			$file = $_FILES['file_excel']['tmp_name'];
 
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
-        $sheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+			$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file);
+			$sheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
-        $data = [];
-        for ($i = 2; $i <= count($sheet); $i++) {
-            $data[] = [
-                'nd_inet'             => trim($sheet[$i]['A']),
-                'ip_embassy'          => trim($sheet[$i]['B']),
-                'type_olt'            => trim($sheet[$i]['C']),
-                'cid'                 => trim($sheet[$i]['D']),
-                'ip_ne'               => trim($sheet[$i]['E']),
-                'adsl_link_status'    => trim($sheet[$i]['F']),
-                'line_rate_1'         => trim($sheet[$i]['G']),
-                'snr_1'               => trim($sheet[$i]['H']),
-                'attenuation_1'       => trim($sheet[$i]['I']),
-                'attainable_rate_1'   => trim($sheet[$i]['J']),
-                'line_rate_2'         => trim($sheet[$i]['K']),
-                'snr_2'               => trim($sheet[$i]['L']),
-                'attenuation_2'       => trim($sheet[$i]['M']),
-                'attainable_rate_2'   => trim($sheet[$i]['N']),
-                'onu_link_status'     => trim($sheet[$i]['O']),
-                'onu_serial_number'   => trim($sheet[$i]['P']),
-                'fiber_length'        => trim($sheet[$i]['Q']),
-                'olt_tx'              => trim($sheet[$i]['R']),
-                'olt_rx'              => trim($sheet[$i]['S']),
-                'onu_tx'              => trim($sheet[$i]['T']),
-                'onu_rx'              => trim($sheet[$i]['U']),
-                'type_onu'            => trim($sheet[$i]['V']),
-                'versionid'           => trim($sheet[$i]['W']),
-                'traffic_profile_up'  => trim($sheet[$i]['X']),
-                'traffic_profile_down'=> trim($sheet[$i]['Y']),
-                'framed_ip_address'   => trim($sheet[$i]['Z']),
-                'mac_address'         => trim($sheet[$i]['AA']),
-                'last_seen'           => trim($sheet[$i]['AB']),
-                'accstarttime'        => trim($sheet[$i]['AC']),
-                'accstoptime'         => trim($sheet[$i]['AD']),
-                'accessiontime'       => trim($sheet[$i]['AE']),
-                'up'                  => trim($sheet[$i]['AF']),
-                'down'                => trim($sheet[$i]['AG']),
-                'status_koneksi'      => trim($sheet[$i]['AH']),
-                'nas_ip_address'      => trim($sheet[$i]['AI'])
-            ];
-        }
+			$data = [];
+			for ($i = 2; $i <= count($sheet); $i++) {
+				$data[] = [
+					'nd_inet'             => trim($sheet[$i]['A']),
+					'ip_embassy'          => trim($sheet[$i]['B']),
+					'type_olt'            => trim($sheet[$i]['C']),
+					'cid'                 => trim($sheet[$i]['D']),
+					'ip_ne'               => trim($sheet[$i]['E']),
+					'adsl_link_status'    => trim($sheet[$i]['F']),
+					'line_rate_1'         => trim($sheet[$i]['G']),
+					'snr_1'               => trim($sheet[$i]['H']),
+					'attenuation_1'       => trim($sheet[$i]['I']),
+					'attainable_rate_1'   => trim($sheet[$i]['J']),
+					'line_rate_2'         => trim($sheet[$i]['K']),
+					'snr_2'               => trim($sheet[$i]['L']),
+					'attenuation_2'       => trim($sheet[$i]['M']),
+					'attainable_rate_2'   => trim($sheet[$i]['N']),
+					'onu_link_status'     => trim($sheet[$i]['O']),
+					'onu_serial_number'   => trim($sheet[$i]['P']),
+					'fiber_length'        => trim($sheet[$i]['Q']),
+					'olt_tx'              => trim($sheet[$i]['R']),
+					'olt_rx'              => trim($sheet[$i]['S']),
+					'onu_tx'              => trim($sheet[$i]['T']),
+					'onu_rx'              => trim($sheet[$i]['U']),
+					'type_onu'            => trim($sheet[$i]['V']),
+					'versionid'           => trim($sheet[$i]['W']),
+					'traffic_profile_up'  => trim($sheet[$i]['X']),
+					'traffic_profile_down' => trim($sheet[$i]['Y']),
+					'framed_ip_address'   => trim($sheet[$i]['Z']),
+					'mac_address'         => trim($sheet[$i]['AA']),
+					'last_seen'           => trim($sheet[$i]['AB']),
+					'accstarttime'        => trim($sheet[$i]['AC']),
+					'accstoptime'         => trim($sheet[$i]['AD']),
+					'accessiontime'       => trim($sheet[$i]['AE']),
+					'up'                  => trim($sheet[$i]['AF']),
+					'down'                => trim($sheet[$i]['AG']),
+					'status_koneksi'      => trim($sheet[$i]['AH']),
+					'nas_ip_address'      => trim($sheet[$i]['AI'])
+				];
+			}
 
-        $this->db->insert_batch('ibooster', $data);
-        $this->session->set_flashdata('message', 'Data berhasil diupload!');
-    } else {
-        $this->session->set_flashdata('error', 'File belum dipilih!');
-    }
+			$this->db->insert_batch('ibooster', $data);
+			$this->session->set_flashdata('message', 'Data berhasil diupload!');
+		} else {
+			$this->session->set_flashdata('error', 'File belum dipilih!');
+		}
 
-    redirect('ibooster');
-}
+		redirect('ibooster');
+	}
 }

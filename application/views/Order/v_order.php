@@ -1,4 +1,5 @@
 <main class="app-main">
+	<!--begin::App Content Header-->
 	<div class="app-content-header">
 		<div class="container-fluid">
 			<div class="row">
@@ -7,38 +8,45 @@
 				</div>
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-end">
-						<li class="breadcrumb-item"><a href="<?= base_url(); ?>">Home</a></li>
+						<li class="breadcrumb-item"><a href="<?= base_url('admin'); ?>">Home</a></li>
 						<li class="breadcrumb-item active" aria-current="page">Order</li>
 					</ol>
 				</div>
 			</div>
 		</div>
 	</div>
+
 	<div class="app-content">
 		<div class="container-fluid">
 			<div class="row mb-3">
-				<div class="col-lg-3">
+				<div class="col-lg-3 mb-2">
 					<a href="<?= base_url('order/tambah') ?>" class="btn btn-primary btn-sm">+ Tambah Order</a>
 				</div>
 				<div class="col-lg-9">
-					<div class="d-flex justify-content-end gap-2">
-						<form method="get" action="<?= base_url('order'); ?>" class="d-flex align-items-center" style="gap: 5px;">
-							<input type="text" name="q" class="form-control form-control-sm w-auto" style="max-width: 160px;" placeholder="Cari..." value="<?= $this->input->get('q'); ?>">
-							<button type="submit" class="btn btn-primary btn-sm">Cari</button>
+					<div class="d-flex justify-content-end flex-wrap ">
+						<!-- Form Pencarian -->
+						<form method="get" action="<?= base_url('order'); ?>" class="mb-2 d-flex align-items-center" style="gap: 8px;">
+							<div class="input-group" style="min-width: 260px; height: 32px;">
+								<span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
+								<input type="text" name="q" class="form-control form-control-sm" placeholder="Search" value="<?= $this->input->get('q'); ?>">
+							</div>
+							<button type="submit" class="btn btn-sm btn-primary" style="height: 32px;">Cari</button>
 						</form>
-						<form method="post" action="<?= base_url('order/uploadCsv'); ?>" enctype="multipart/form-data" class="d-flex align-items-center" style="gap: 5px;">
-							<input type="file" name="csv_file" accept=".csv" class="form-control form-control-sm w-auto" style="max-width: 160px;" required>
-							<button type="submit" class="btn btn-success btn-sm">Upload CSV</button>
+
+						<!-- Form Upload CSV -->
+						<form method="post" action="<?= base_url('order/uploadCsv'); ?>" enctype="multipart/form-data" class="d-flex flex-wrap align-items-center gap-2 mb-2">
+							<input type="file" name="csv_file" accept=".csv" class="form-control form-control-sm" style="max-width: 200px;">
+							<button type="submit" class="btn btn-success btn-sm" style="height: 32px;">Upload CSV</button>
 						</form>
 					</div>
 				</div>
 			</div>
+
+			<!-- Tabel -->
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="card card-primary">
-						<div class="card-header">
-							Daftar Order
-						</div>
+						<div class="card-header">Daftar Order</div>
 						<div class="card-body">
 							<table class="table table-bordered table-striped">
 								<thead>
@@ -84,8 +92,8 @@
 									<?php endif; ?>
 								</tbody>
 							</table>
-						</div>
-					</div>
+						</div> <!-- end card-body -->
+					</div> <!-- end card -->
 				</div>
 			</div>
 		</div>

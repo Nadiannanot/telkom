@@ -9,10 +9,13 @@ class Sektor extends CI_Controller
 	{
 		parent::__construct();
 
-		if (empty($this->session->userdata('user_login'))) {
-			$this->session->set_flashdata('toastr-error', 'Anda belum login');
-			redirect('login', 'refresh');
+		if (!$this->session->userdata('email')) {
+			redirect('auth');
 		}
+		if ($this->session->userdata('role_id') != 1) {
+			redirect('user');
+		}
+
 
 		$this->load->model('M_Sektor', 'sektor');
 	}
@@ -27,25 +30,36 @@ class Sektor extends CI_Controller
 			$sektor_data = $this->sektor->getAllSektor();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Sektor',
 			'page' => 'sektor/v_sektor',
 			'judul' => 'Data Sektor',
 			'sektor' => $sektor_data,
-			'keyword' => $keyword
+			'keyword' => $keyword,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('sektor/v_sektor', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function add()
 	{
 		$data = [
 			'title' => 'Tambah Sektor',
-			'page' => 'sektor/v_addSektor'
+			'page' => 'sektor/v_addSektor',
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('sektor/v_addsektor', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postAdd()
@@ -57,6 +71,7 @@ class Sektor extends CI_Controller
 		if ($this->form_validation->run() == FALSE) {
 			$this->add();
 		} else {
+			$email = $this->session->userdata('email'); // tambahkan baris ini
 			$data = [
 				'sektor' => $this->input->post('sektor')
 			];
@@ -80,14 +95,20 @@ class Sektor extends CI_Controller
 			show_404();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Edit Data Sektor',
 			'judul' => 'Edit Data Sektor',
 			'page' => 'sektor/v_editSektor',
-			'sektor' => $sektor
+			'sektor' => $sektor,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('sektor/v_addsektor', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function update()

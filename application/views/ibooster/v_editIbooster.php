@@ -28,7 +28,7 @@
 							Edit Ibooster
 						</div>
 						<div class="card-body">
-							<form action="<?= base_url('ibooster/postEdit/' . $ibooster->id); ?>" method="POST">
+							<form action="<?= base_url('ibooster/postEdit/' . $ibooster->no); ?>" method="POST">
 								<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>" />
 
 								<?php

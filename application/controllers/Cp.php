@@ -8,10 +8,11 @@ class Cp extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-
-		if (empty($this->session->userdata('user_login'))) {
-			$this->session->set_flashdata('toastr-error', 'Anda belum login');
-			redirect('login', 'refresh');
+		if (!$this->session->userdata('email')) {
+			redirect('auth');
+		}
+		if ($this->session->userdata('role_id') != 1) {
+			redirect('user');
 		}
 
 		$this->load->model('M_Cp', 'cp');
@@ -27,24 +28,36 @@ class Cp extends CI_Controller
 			$cp_data = $this->cp->getAllCp();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'CP',
 			'page' => 'cp/v_cp',
 			'cp' => $cp_data,
-			'keyword' => $keyword
+			'keyword' => $keyword,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('Cp/v_cp', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function add()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Tambah CP',
-			'page' => 'cp/v_addCp'
+			'page' => 'cp/v_addCp',
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('Cp/v_addcp', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postAdd()
@@ -83,13 +96,19 @@ class Cp extends CI_Controller
 			show_404();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Edit CP',
 			'page' => 'cp/v_editCp',
-			'cp' => $cp
+			'cp' => $cp,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('Cp/v_editcp', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function update()

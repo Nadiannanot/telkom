@@ -9,11 +9,13 @@ class Seqclose extends CI_Controller
 	{
 		parent::__construct();
 
-		if (empty($this->session->userdata('user_login'))) {
-			$this->session->set_flashdata('toastr-error', 'Anda belum login');
-			redirect('login', 'refresh');
-		}
 
+		if (!$this->session->userdata('email')) {
+			redirect('auth');
+		}
+		if ($this->session->userdata('role_id') != 1) {
+			redirect('user');
+		}
 		$this->load->model('M_Seqclose', 'seqclose');
 	}
 
@@ -26,26 +28,38 @@ class Seqclose extends CI_Controller
 		} else {
 			$seqclose_data = $this->seqclose->getAllSeqclose();
 		}
-
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Seqclose',
 			'page' => 'seqclose/v_seqclose',
 			'judul' => 'Data Seqclose',
 			'seqclose' => $seqclose_data,
-			'keyword' => $keyword
+			'keyword' => $keyword,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('seqclose/v_seqclose', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function add()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Tambah Seqclose',
-			'page' => 'seqclose/v_addSeqclose'
+			'page' => 'seqclose/v_addSeqclose',
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('seqclose/v_addSeqclose', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postAdd()
@@ -84,14 +98,20 @@ class Seqclose extends CI_Controller
 			show_404();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Edit Data Seqclose',
 			'judul' => 'Edit Data Seqclose',
 			'page' => 'seqclose/v_editSeqclose',
-			'seqclose' => $seqclose
+			'seqclose' => $seqclose,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('seqclose/v_editSeqclose', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function update()

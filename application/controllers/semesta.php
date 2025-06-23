@@ -8,9 +8,12 @@ class Semesta extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		if (empty($this->session->userdata('user_login'))) {
-			$this->session->set_flashdata('toastr-error', 'Anda belum login');
-			redirect('login', 'refresh');
+
+		if (!$this->session->userdata('email')) {
+			redirect('auth');
+		}
+		if ($this->session->userdata('role_id') != 1) {
+			redirect('user');
 		}
 		$this->load->model('M_Semesta', 'semesta');
 		$this->load->model('M_Uslis', 'uslis'); // Untuk relasi sektor
@@ -27,26 +30,39 @@ class Semesta extends CI_Controller
 			$semesta_data = $this->semesta->getAllSemesta();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Semesta',
 			'page' => 'semesta/v_semesta',
 			'judul' => 'Data Semesta',
 			'semesta' => $semesta_data,
-			'keyword' => $keyword
+			'keyword' => $keyword,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('semesta/v_semesta', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function add()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Tambah Semesta',
 			'page' => 'semesta/v_addSemesta',
-			'uslis' => $this->uslis->getAllUslis()
+			'uslis' => $this->uslis->getAllUslis(),
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('semesta/v_addSemesta', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postAdd()
@@ -109,15 +125,21 @@ class Semesta extends CI_Controller
 			show_404();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Edit Data Semesta',
 			'judul' => 'Edit Data Semesta',
 			'page' => 'semesta/v_editSemesta',
 			'semesta' => $semesta,
-			'uslis' => $this->uslis->getAllUslis()
+			'uslis' => $this->uslis->getAllUslis(),
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('semesta/v_editSemesta', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function update()
