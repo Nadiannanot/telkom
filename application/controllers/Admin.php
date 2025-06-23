@@ -26,5 +26,17 @@ public function index()
 		$this->load->view('admin/index', $data);
 		$this->load->view('templates/footer');
 	}
+	function profile()
+	{
+		$email = $this->session->userdata('email');
+		$data['user'] = $this->db->get_where('user', ['email' => $email])->row_array();
+		$data['title'] = 'Profile Admin';
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('admin/profile', $data);
+		$this->load->view('templates/footer');
+	}
 }
 ///
