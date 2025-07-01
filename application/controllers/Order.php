@@ -54,14 +54,31 @@ class Order extends CI_Controller
 
 	public function postTambah()
 	{
-		$this->form_validation->set_rules('no_ticket', 'No Ticket', 'required');
-		$this->form_validation->set_rules('service_no', 'Service No', 'required');
-		$this->form_validation->set_rules('reported_date', 'Reported Date', 'required');
-		$this->form_validation->set_rules('closed_date', 'Closed Date', 'required');
-		$this->form_validation->set_rules('nik_teknisi', 'NIK Teknisi', 'required');
-		$this->form_validation->set_rules('jenis_order', 'Jenis Order', 'required');
-		$this->form_validation->set_rules('segmentasi', 'Segmentasi', 'required');
-		$this->form_validation->set_rules('sektor', 'Sektor', 'required');
+		$this->form_validation->set_rules('no_ticket', 'No Ticket', 'required', [
+			'required' => 'No Ticket harus diisi!'
+		]);
+		$this->form_validation->set_rules('service_no', 'Service No', 'required', [
+			'required' => 'Service No harus diisi!'
+		]);
+		$this->form_validation->set_rules('reported_date', 'Reported Date', 'required', [
+			'required' => 'Reported Date harus diisi!'
+		]);
+		$this->form_validation->set_rules('closed_date', 'Closed Date', 'required', [
+			'required' => 'Closed Date harus diisi!'
+		]);
+		$this->form_validation->set_rules('nik_teknisi', 'NIK Teknisi', 'required', [
+			'required' => 'NIK Teknisi harus diisi!'
+		]);
+		$this->form_validation->set_rules('jenis_order', 'Jenis Order', 'required', [
+			'required' => 'Jenis Order harus diisi!'
+		]);
+		$this->form_validation->set_rules('segmentasi', 'Segmentasi', 'required', [
+			'required' => 'Segmentasi harus diisi!'
+		]);
+		$this->form_validation->set_rules('sektor', 'Sektor', 'required', [
+			'required' => 'Sektor harus diisi!'
+		]);
+
 
 		if ($this->form_validation->run() == FALSE) {
 			$this->tambah();
@@ -103,14 +120,31 @@ class Order extends CI_Controller
 	public function update()
 	{
 		$id = $this->input->post('id');
-		$this->form_validation->set_rules('no_ticket', 'No Ticket', 'required');
-		$this->form_validation->set_rules('service_no', 'Service No', 'required');
-		$this->form_validation->set_rules('reported_date', 'Reported Date', 'required');
-		$this->form_validation->set_rules('closed_date', 'Closed Date', 'required');
-		$this->form_validation->set_rules('nik_teknisi', 'NIK Teknisi', 'required');
-		$this->form_validation->set_rules('jenis_order', 'Jenis Order', 'required');
-		$this->form_validation->set_rules('segmentasi', 'Segmentasi', 'required');
-		$this->form_validation->set_rules('sektor', 'Sektor', 'required');
+		$this->form_validation->set_rules('no_ticket', 'No Ticket', 'required', [
+			'required' => 'No Ticket harus diisi!'
+		]);
+		$this->form_validation->set_rules('service_no', 'Service No', 'required', [
+			'required' => 'Service No harus diisi!'
+		]);
+		$this->form_validation->set_rules('reported_date', 'Reported Date', 'required', [
+			'required' => 'Reported Date harus diisi!'
+		]);
+		$this->form_validation->set_rules('closed_date', 'Closed Date', 'required', [
+			'required' => 'Closed Date harus diisi!'
+		]);
+		$this->form_validation->set_rules('nik_teknisi', 'NIK Teknisi', 'required', [
+			'required' => 'NIK Teknisi harus diisi!'
+		]);
+		$this->form_validation->set_rules('jenis_order', 'Jenis Order', 'required', [
+			'required' => 'Jenis Order harus diisi!'
+		]);
+		$this->form_validation->set_rules('segmentasi', 'Segmentasi', 'required', [
+			'required' => 'Segmentasi harus diisi!'
+		]);
+		$this->form_validation->set_rules('sektor', 'Sektor', 'required', [
+			'required' => 'Sektor harus diisi!'
+		]);
+
 
 		if ($this->form_validation->run() == FALSE) {
 			$this->edit($id);

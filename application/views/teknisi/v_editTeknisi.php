@@ -19,7 +19,7 @@
 	<div class="app-content">
 		<div class="container-fluid">
 			<div class="card card-primary">
-				<div class="card-header">Form Edit Teknisi</div>
+				<div class="card-header">Edit Teknisi</div>
 				<div class="card-body">
 					<form action="<?= base_url('teknisi/update'); ?>" method="post">
 						<input type="hidden" name="nik_lama" value="<?= $teknisi->nik_teknisi; ?>">
@@ -59,7 +59,7 @@
 							</select>
 							<small class="text-danger"><?= form_error('status'); ?></small>
 						</div>
-						<button type="submit" class="btn btn-primary">Update</button>
+						<button type="submit" class="btn btn-primary">Simpan</button>
 						<a href="<?= base_url('teknisi'); ?>" class="btn btn-secondary">Batal</a>
 					</form>
 				</div>

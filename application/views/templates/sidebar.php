@@ -29,6 +29,50 @@
 	<!-- Divider -->
 	<hr class="sidebar-divider">
 
+	<!-- Nav Item - Dashboard -->
+	<li class="nav-item">
+		<a class="nav-link" href="<?= base_url('ordrus') ?>">
+
+			<i class="fas fa-fw fa-tachometer-alt"></i>
+			<span>Order</span></a>
+	</li>
+
+	<!-- Divider -->
+	<hr class="sidebar-divider">
+
+	<!-- Nav Item - Dashboard -->
+	<li class="nav-item">
+		<a class="nav-link" href="<?= base_url('seqclose') ?>">
+
+			<i class="fas fa-fw fa-tachometer-alt"></i>
+			<span>Segment Close</span></a>
+	</li>
+
+	<!-- Divider -->
+	<hr class="sidebar-divider">
+
+	<!-- Nav Item - Dashboard -->
+	<li class="nav-item">
+		<a class="nav-link" href="<?= base_url('teknisius') ?>">
+
+			<i class="fas fa-fw fa-tachometer-alt"></i>
+			<span>teknisi</span></a>
+	</li>
+
+	<!-- Divider -->
+	<hr class="sidebar-divider">
+
+	<!-- Nav Item - Dashboard -->
+	<li class="nav-item">
+		<a class="nav-link" href="<?= base_url('seqclose') ?>">
+
+			<i class="fas fa-fw fa-tachometer-alt"></i>
+			<span>jadwal</span></a>
+	</li>
+
+	<!-- Divider -->
+	<hr class="sidebar-divider">
+
 	<!-- Heading -->
 	<div class="sidebar-heading">
 		USER
@@ -43,6 +87,7 @@
 
 		<!-- Divider -->
 		<hr class="sidebar-divider">
+
 
 		<!-- Nav Item - Pages Collapse Menu -->
 	<li class="nav-item">

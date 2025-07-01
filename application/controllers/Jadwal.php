@@ -7,9 +7,11 @@ class Jadwal extends CI_Controller
 	{
 		parent::__construct();
 
-		if (empty($this->session->userdata('user_login'))) {
-			$this->session->set_flashdata('toastr-error', 'Anda belum login');
-			redirect('login', 'refresh');
+		if (!$this->session->userdata('email')) {
+			redirect('auth');
+		}
+		if ($this->session->userdata('role_id') != 1) {
+			redirect('user');
 		}
 
 		$this->load->model('M_Jadwal', 'jadwal');
@@ -19,23 +21,35 @@ class Jadwal extends CI_Controller
 	{
 		$keyword = $this->input->get('keyword');
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title'  => 'Jadwal',
 			'page'   => 'jadwal/v_jadwal',
-			'jadwal' => !empty($keyword) ? $this->jadwal->searchJadwal($keyword) : $this->jadwal->getAllJadwal()
+			'jadwal' => !empty($keyword) ? $this->jadwal->searchJadwal($keyword) : $this->jadwal->getAllJadwal(),
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('jadwal/v_jadwal', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function add()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Tambah Jadwal',
-			'page'  => 'jadwal/v_addJadwal'
+			'page'  => 'jadwal/v_addJadwal',
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('jadwal/v_addJadwal', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postAdd()
@@ -82,13 +96,19 @@ class Jadwal extends CI_Controller
 			show_404();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title'  => 'Edit Jadwal',
 			'page'   => 'jadwal/v_editJadwal',
-			'jadwal' => $jadwal
+			'jadwal' => $jadwal,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('jadwal/v_editJadwal', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function update()
@@ -140,6 +160,32 @@ class Jadwal extends CI_Controller
 			$this->session->set_flashdata('toastr-error', 'Data gagal dihapus!');
 		}
 
+		redirect('jadwal');
+	}
+
+	public function uploadCsv()
+	{
+		if ($_FILES['csv_file']['name']) {
+			$file = $_FILES['csv_file']['tmp_name'];
+			$handle = fopen($file, "r");
+			$header = fgetcsv($handle, 1000, ",");
+
+			while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+				if (count($row) >= 4) {
+					$data = [
+						'nik'    => $row[0],
+						'tgl'    => $row[1],
+						'sektor' => $row[2],
+						'status' => $row[3]
+					];
+					$this->jadwal->insertJadwal($data);
+				}
+			}
+			fclose($handle);
+			$this->session->set_flashdata('toastr-success', 'Upload CSV berhasil!');
+		} else {
+			$this->session->set_flashdata('toastr-error', 'File tidak ditemukan!');
+		}
 		redirect('jadwal');
 	}
 }

@@ -9,9 +9,11 @@ class Tsel extends CI_Controller
 	{
 		parent::__construct();
 
-		if (empty($this->session->userdata('user_login'))) {
-			$this->session->set_flashdata('toastr-error', 'Anda belum login');
-			redirect('login', 'refresh');
+		if (!$this->session->userdata('email')) {
+			redirect('auth');
+		}
+		if ($this->session->userdata('role_id') != 1) {
+			redirect('user');
 		}
 
 		$this->load->model('M_Tsel', 'tsel');
@@ -28,27 +30,39 @@ class Tsel extends CI_Controller
 			$tsel_data = $this->tsel->getAllTsel();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$saldo_data = $this->saldo->getAllSaldo();  // Ambil data saldo
-
 		$data = [
 			'title'   => 'Tsel',
 			'page'    => 'tsel/v_tsel',
 			'tsel'    => $tsel_data,
 			'saldo'   => $saldo_data,
-			'keyword' => $keyword
+			'keyword' => $keyword,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('tsel/v_tsel', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function add()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Tambah Tsel',
-			'page'  => 'tsel/v_addTsel'
+			'page'  => 'tsel/v_addTsel',
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('tsel/v_addTsel', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postAdd()
@@ -122,6 +136,7 @@ class Tsel extends CI_Controller
 
 	public function edit($id)
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$tsel = $this->tsel->getTselById($id);
 		if (!$tsel) {
 			show_404();
@@ -130,10 +145,15 @@ class Tsel extends CI_Controller
 		$data = [
 			'title' => 'Edit Tsel',
 			'page'  => 'tsel/v_editTsel',
-			'tsel'  => $tsel
+			'tsel'  => $tsel,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('tsel/v_editTsel', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function update()
@@ -220,39 +240,35 @@ class Tsel extends CI_Controller
 		redirect('tsel');
 	}
 
-	public function upload_excel()
+	public function uploadCsv()
 	{
-		if (!empty($_FILES['file_excel']['name'])) {
-			$file = $_FILES['file_excel']['tmp_name'];
+		if ($_FILES['csv_file']['name']) {
+			$file = $_FILES['csv_file']['tmp_name'];
+			$handle = fopen($file, "r");
 
-			// Load spreadsheet
-			$spreadsheet = IOFactory::load($file);
-			$sheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+			$header = fgetcsv($handle, 1000, ","); // skip header
 
-			// Lewati header (baris pertama)
-			for ($i = 2; $i <= count($sheet); $i++) {
-				$data[] = [
-					'nd_inet'   => $sheet[$i]['A'],
-					'ncli_inet' => $sheet[$i]['B'],
-					'flag_hvc'  => $sheet[$i]['C'],
-					'reg'       => $sheet[$i]['D'],
-					'witel'     => $sheet[$i]['E'],
-					'datel_ncx' => $sheet[$i]['F'],
-					'sto'       => $sheet[$i]['G'],
-					'cdatel'    => $sheet[$i]['H'],
-					'nd_pots'   => $sheet[$i]['I'],
-					'cwitel'    => $sheet[$i]['J'],
-					'odc'       => $sheet[$i]['K'],
-					'odp'       => $sheet[$i]['L']
+			while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+				$data = [
+					'nd_inet'    => $row[0],
+					'ncli_inet'  => $row[1],
+					'flag_hvc'   => $row[2],
+					'reg'        => $row[3],
+					'witel'      => $row[4],
+					'datel_ncx'  => $row[5],
+					'sto'        => $row[6],
+					'cdatel'     => $row[7],
+					'nd_pots'    => $row[8],
+					'cwitel'     => $row[9],
+					'odc'        => $row[10],
+					'odp'        => $row[11]
 				];
+				$this->db->insert('tsel', $data);
 			}
-
-			// Simpan ke database
-			$this->db->insert_batch('tsel', $data);
-
-			$this->session->set_flashdata('message', 'Data berhasil diupload!');
+			fclose($handle);
+			$this->session->set_flashdata('toastr-success', 'Upload CSV berhasil!');
 		} else {
-			$this->session->set_flashdata('error', 'File belum dipilih!');
+			$this->session->set_flashdata('toastr-error', 'File tidak ditemukan!');
 		}
 
 		redirect('tsel');

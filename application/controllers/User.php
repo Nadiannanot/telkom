@@ -17,10 +17,6 @@ class User extends CI_Controller
     public function index()
     {
         $email = $this->session->userdata('email');
-        if (!$email) {
-            // Jika tidak login, redirect ke halaman login
-            redirect('auth');
-        }
         $data['user'] = $this->db->get_where('user', ['email' => $email])->row_array();
         $data['title'] = 'My Profile';
 

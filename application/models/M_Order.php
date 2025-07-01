@@ -38,3 +38,4 @@ class M_Order extends CI_Model
 		return $this->db->get('tb_order')->result();
 	}
 }
+

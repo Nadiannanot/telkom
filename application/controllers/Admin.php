@@ -6,15 +6,15 @@ class Admin extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-	
+
 		if (!$this->session->userdata('email')) {
 			redirect('auth');
 		}
 		if ($this->session->userdata('role_id') != 1) {
-			redirect('user');
+			redirect('auth');
 		}
 	}
-public function index()
+	public function index()
 	{
 		$email = $this->session->userdata('email');
 		$data['user'] = $this->db->get_where('user', ['email' => $email])->row_array();

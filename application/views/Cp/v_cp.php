@@ -24,31 +24,27 @@
             <h1 class="mb-2">Data CP</h1>
 
             <nav aria-label="breadcrumb" class="mb-3">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">Master UNSPEC</li>
-                    <li class="breadcrumb-item active" aria-current="page"><?= $title ?></li>
-                </ol>
             </nav>
 
             <!--begin::Top Actions-->
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
                 <!-- Search form -->
-                <form action="<?= base_url('cp'); ?>" method="get" class="d-flex me-2 mb-2">
-                    <div class="input-group">
+                <form method="get" action="<?= base_url('cp'); ?>" class="mb-2 d-flex align-items-center" style="gap: 8px;">
+                    <div class="input-group" style="min-width: 260px; height: 32px;">
                         <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
-                        <input type="text" name="keyword" class="form-control" placeholder="Search" aria-label="Search" value="<?= $this->input->get('keyword'); ?>">
-                        <button class="btn btn-primary" type="submit">Cari</button>
+                        <input type="text" name="keyword" class="form-control form-control-sm" placeholder="Search" value="<?= $this->input->get('keyword'); ?>">
                     </div>
+                    <button type="submit" class="btn btn-sm btn-primary" style="height: 32px;">Cari</button>
                 </form>
 
                 <!-- Action buttons -->
                 <div class="d-flex flex-wrap gap-2 mb-2">
-                    <a href="<?= base_url('cp/add'); ?>" class="btn btn-primary">
-                        <i class="fas fa-plus-circle"></i> Tambah
+                    <a href="<?= base_url('cp/add'); ?>" class="btn btn-primary" style="margin-right: 10px;">
+                        <i class=" fas fa-plus-circle"></i> Tambah
                     </a>
 
-                    <form action="<?= base_url('cp/upload_excel'); ?>" method="post" enctype="multipart/form-data" class="d-flex flex-wrap gap-2 align-items-center">
-                        <input type="file" name="file_excel" accept=".xls,.xlsx" class="form-control" required style="max-width: 250px;">
+                    <form action="<?= base_url('jadwal/uploadCsv'); ?>" method="post" enctype="multipart/form-data" class="d-flex flex-wrap gap-2 align-items-center">
+                        <input type="file" name="csv_file" accept=".csv" class="form-control" required style="max-width: 250px; margin-right: 10px;">
                         <button type="submit" class="btn btn-success">
                             <i class="fas fa-file-upload"></i> Upload CSV
                         </button>
@@ -61,21 +57,22 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card card-primary">
-                        <div class="card-header">&nbsp;</div>
+                        <div class="card-header">Kontak Person</div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover">
-                                    <thead class="table-light text-center align-middle">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
                                         <tr>
-                                            <th>No</th>
-                                            <th>ND INET</th>
-                                            <th>CP Dossier</th>
-                                            <th>Aksi</th>
+                                            <th class="text-center">No</th>
+                                            <th class="text-center">ND INET</th>
+                                            <th class="text-center">CP Dossier</th>
+                                            <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if (!empty($cp)) : ?>
-                                            <?php $no = 1; foreach ($cp as $c) : ?>
+                                            <?php $no = 1;
+                                            foreach ($cp as $c) : ?>
                                                 <tr class="text-center align-middle">
                                                     <td><?= $no++; ?></td>
                                                     <td><?= $c->nd_inet; ?></td>

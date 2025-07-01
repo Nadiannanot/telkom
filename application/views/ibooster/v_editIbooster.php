@@ -28,8 +28,10 @@
 							Edit Ibooster
 						</div>
 						<div class="card-body">
-							<form action="<?= base_url('ibooster/postEdit/' . $ibooster->id); ?>" method="POST">
-								<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>" />
+							<form action="<?= base_url('ibooster/update'); ?>" method="post">
+								<input type="hidden" name="id" value="<?= $ibooster->no; ?>">
+
+
 
 								<?php
 								$fields = [
@@ -78,7 +80,7 @@
 									</div>
 								<?php endforeach; ?>
 
-								<button type="submit" class="btn btn-warning">Update</button>
+								<button type="submit" class="btn btn-warning">Simpan</button>
 								<a href="<?= base_url('ibooster'); ?>" class="btn btn-secondary">Cancel</a>
 							</form>
 						</div>

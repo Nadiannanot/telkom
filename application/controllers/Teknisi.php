@@ -7,10 +7,11 @@ class Teknisi extends CI_Controller
     {
         parent::__construct();
 
-        // Contoh jika ada login check
-        if (empty($this->session->userdata('user_login'))) {
-            $this->session->set_flashdata('toastr-error', 'Anda belum login');
-            redirect('login', 'refresh');
+        if (!$this->session->userdata('email')) {
+            redirect('auth');
+        }
+        if ($this->session->userdata('role_id') != 1) {
+            redirect('user');
         }
 
         $this->load->model('M_Teknisi', 'teknisi');
@@ -18,29 +19,40 @@ class Teknisi extends CI_Controller
 
     public function index()
     {
-            $keyword = $this->input->get('keyword');
+        $keyword = $this->input->get('keyword');
 
         if ($keyword) {
             $this->db->like('nik_teknisi', $keyword);
         }
-
+        $email = $this->session->userdata('email'); // tambahkan baris ini
         $data = [
             'title' => 'Data Teknisi',
             'page'  => 'teknisi/v_teknisi',
-            'teknisi' => $this->db->get('teknisi')->result()
+            'teknisi' => $this->db->get('teknisi')->result(),
+            'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
         ];
 
-        $this->load->view('layout/index', $data);
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar_admin', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('teknisi/v_teknisi', $data);
+        $this->load->view('templates/footer');
     }
 
     public function add()
     {
+        $email = $this->session->userdata('email'); // tambahkan baris ini
         $data = [
             'title' => 'Tambah Teknisi',
-            'page'  => 'teknisi/v_addTeknisi'
+            'page'  => 'teknisi/v_addTeknisi',
+            'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
         ];
 
-        $this->load->view('layout/index', $data);
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar_admin', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('teknisi/v_addTeknisi', $data);
+        $this->load->view('templates/footer');
     }
 
     public function postAdd()
@@ -70,13 +82,19 @@ class Teknisi extends CI_Controller
             show_404();
         }
 
+        $email = $this->session->userdata('email'); // tambahkan baris ini
         $data = [
             'title'   => 'Edit Teknisi',
             'page'    => 'teknisi/v_editTeknisi',
-            'teknisi' => $teknisi
+            'teknisi' => $teknisi,
+            'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
         ];
 
-        $this->load->view('layout/index', $data);
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar_admin', $data);
+        $this->load->view('templates/topbar', $data);
+        $this->load->view('teknisi/v_editTeknisi', $data);
+        $this->load->view('templates/footer');
     }
 
     public function update()
@@ -100,7 +118,7 @@ class Teknisi extends CI_Controller
         redirect('teknisi');
     }
 
-    public function hapus($nik)
+    public function delete($nik)
     {
         $delete = $this->teknisi->delete($nik);
 
@@ -108,6 +126,34 @@ class Teknisi extends CI_Controller
             $delete ? 'toastr-success' : 'toastr-error',
             $delete ? 'Data berhasil dihapus!' : 'Data gagal dihapus!'
         );
+
+        redirect('teknisi');
+    }
+
+    public function uploadCsv()
+    {
+        if ($_FILES['csv_file']['name']) {
+            $file = $_FILES['csv_file']['tmp_name'];
+            $handle = fopen($file, "r");
+
+            $header = fgetcsv($handle, 1000, ","); // skip header
+
+            while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                $data = [
+                    'nik_teknisi'      => $row[0],
+                    'nama_teknisi'      => $row[1],
+                    'sektor'            => $row[2],
+                    'jenis'             => $row[3],
+                    'status'             => $row[4],
+
+                ];
+                $this->db->insert('teknisi', $data);
+            }
+            fclose($handle);
+            $this->session->set_flashdata('toastr-success', 'Upload CSV berhasil!');
+        } else {
+            $this->session->set_flashdata('toastr-error', 'File tidak ditemukan!');
+        }
 
         redirect('teknisi');
     }

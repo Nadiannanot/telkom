@@ -9,11 +9,13 @@ class Seqclose extends CI_Controller
 	{
 		parent::__construct();
 
-		if (empty($this->session->userdata('user_login'))) {
-			$this->session->set_flashdata('toastr-error', 'Anda belum login');
-			redirect('login', 'refresh');
-		}
 
+		if (!$this->session->userdata('email')) {
+			redirect('auth');
+		}
+		if ($this->session->userdata('role_id') != 1) {
+			redirect('user');
+		}
 		$this->load->model('M_Seqclose', 'seqclose');
 	}
 
@@ -26,26 +28,38 @@ class Seqclose extends CI_Controller
 		} else {
 			$seqclose_data = $this->seqclose->getAllSeqclose();
 		}
-
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Seqclose',
 			'page' => 'seqclose/v_seqclose',
 			'judul' => 'Data Seqclose',
 			'seqclose' => $seqclose_data,
-			'keyword' => $keyword
+			'keyword' => $keyword,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('seqclose/v_seqclose', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function add()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Tambah Seqclose',
-			'page' => 'seqclose/v_addSeqclose'
+			'page' => 'seqclose/v_addSeqclose',
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('seqclose/v_addSeqclose', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postAdd()
@@ -84,14 +98,20 @@ class Seqclose extends CI_Controller
 			show_404();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Edit Data Seqclose',
 			'judul' => 'Edit Data Seqclose',
 			'page' => 'seqclose/v_editSeqclose',
-			'seqclose' => $seqclose
+			'seqclose' => $seqclose,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('seqclose/v_editSeqclose', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function update()
@@ -138,26 +158,26 @@ class Seqclose extends CI_Controller
 		redirect('seqclose');
 	}
 
-	public function upload_excel()
+	public function uploadCsv()
 	{
-		if (!empty($_FILES['file_excel']['name'])) {
-			$file = $_FILES['file_excel']['tmp_name'];
+		if ($_FILES['csv_file']['name']) {
+			$file = $_FILES['csv_file']['tmp_name'];
+			$handle = fopen($file, "r");
 
-			$spreadsheet = IOFactory::load($file);
-			$sheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+			$header = fgetcsv($handle, 1000, ","); // skip header
 
-			$data = [];
-			for ($i = 2; $i <= count($sheet); $i++) {
-				$data[] = [
-					'segmentasi' => trim($sheet[$i]['A']),
-					'sub_segment' => trim($sheet[$i]['B'])
+			while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+				$data = [
+					'segmentasi'   			 => $row[0],
+					'sub_segment'				 => $row[1],
+
 				];
+				$this->db->insert('seqclose', $data);
 			}
-
-			$this->db->insert_batch('seq_close', $data);
-			$this->session->set_flashdata('message', 'Data berhasil diupload!');
+			fclose($handle);
+			$this->session->set_flashdata('toastr-success', 'Upload CSV berhasil!');
 		} else {
-			$this->session->set_flashdata('error', 'File belum dipilih!');
+			$this->session->set_flashdata('toastr-error', 'File tidak ditemukan!');
 		}
 
 		redirect('seqclose');

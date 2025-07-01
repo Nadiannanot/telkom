@@ -17,37 +17,32 @@
             </div>
         </div>
     </div>
+    <!--end::App Content Header-->
 
     <!--begin::Main Content-->
     <div class="main-content col ps-0">
         <div class="p-2 pt-0">
-            <h1 class="mb-2">Data Seqclose</h1>
-            <nav aria-label="breadcrumb" class="mb-3">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">Master Seqclose</li>
-                    <li class="breadcrumb-item active" aria-current="page"><?= $title ?></li>
-                </ol>
-            </nav>
+            <h1 class="mb-2">Segment Close</h1>
 
             <!--begin::Top Actions-->
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
                 <!-- Search form -->
-                <form action="<?= base_url('seqclose'); ?>" method="get" class="d-flex me-2 mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
-                        <input type="text" name="keyword" class="form-control" placeholder="Search" aria-label="Search" value="<?= $this->input->get('keyword'); ?>">
-                        <button class="btn btn-primary" type="submit">Cari</button>
+                <form method="get" action="<?= base_url('seqclose'); ?>" class="d-flex align-items-center" style="gap: 8px;">
+                    <div class="d-flex align-items-center border rounded px-2" style="min-width: 260px; height: 32px; background-color: white;">
+                        <i class="fas fa-search text-muted"></i>
+                        <input type="text" name="keyword" class="form-control form-control-sm border-0 shadow-none" placeholder="Search" value="<?= $this->input->get('keyword'); ?>" style="font-size: 14px; padding-left: 10px;">
                     </div>
+                    <button type="submit" class="btn btn-sm btn-primary" style="height: 32px;">Cari</button>
                 </form>
 
                 <!-- Action buttons -->
-                <div class="d-flex flex-wrap gap-2 mb-2">
-                    <a href="<?= base_url('seqclose/add'); ?>" class="btn btn-primary">
+                <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                    <a href="<?= base_url('seqclose/add'); ?>" class="btn btn-primary" style="margin-right: 10px;">
                         <i class="fas fa-plus-circle"></i> Tambah
                     </a>
 
-                    <form action="<?= base_url('seqclose/upload_excel'); ?>" method="post" enctype="multipart/form-data" class="d-flex flex-wrap gap-2 align-items-center">
-                        <input type="file" name="file_excel" accept=".xls,.xlsx" class="form-control" required style="max-width: 250px;">
+                    <form action="<?= base_url('jadwal/uploadCsv'); ?>" method="post" enctype="multipart/form-data" class="d-flex flex-wrap gap-2 align-items-center">
+                        <input type="file" name="csv_file" accept=".csv" class="form-control" required style="max-width: 250px; margin-right: 10px;">
                         <button type="submit" class="btn btn-success">
                             <i class="fas fa-file-upload"></i> Upload CSV
                         </button>
@@ -60,46 +55,49 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card card-primary">
-                        <div class="card-header">&nbsp;</div>
+                        <div class="card-header">Segment Close</div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover">
-                                    <thead class="table-light text-center align-middle">
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Segmentasi</th>
-                                            <th>Sub Segment</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php if (!empty($seqclose)) : ?>
-                                            <?php $no = 1; foreach ($seqclose as $s) : ?>
-                                                <tr class="text-center align-middle">
-                                                    <td><?= $no++; ?></td>
-                                                    <td><?= $s->segmentasi; ?></td>
-                                                    <td><?= $s->sub_segment; ?></td>
-                                                    <td>
-                                                        <div class="d-inline-flex gap-1">
-                                                            <a href="<?= base_url('seqclose/edit/' . $s->id); ?>" class="btn btn-warning btn-sm">Edit</a>
-                                                            <a href="#" data-href="<?= base_url('seqclose/delete/' . $s->id); ?>" class="btn btn-danger btn-sm tombol-hapus">Hapus</a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; ?>
-                                        <?php else : ?>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
                                             <tr>
-                                                <td colspan="4" class="text-center">Tidak ada data.</td>
+                                                <th class="text-center">No</th>
+                                                <th class="text-center">Segmentasi</th>
+                                                <th class="text-center">Sub Segment</th>
+                                                <th class="text-center">Aksi</th>
                                             </tr>
-                                        <?php endif; ?>
-                                    </tbody>
-                                </table>
-                            </div> <!-- end table-responsive -->
+                                        </thead>
+                                        <tbody>
+                                            <?php if (!empty($seqclose)) : ?>
+                                                <?php $no = 1;
+                                                foreach ($seqclose as $s) : ?>
+                                                    <tr class="text-center align-middle">
+                                                        <td><?= $no++; ?></td>
+                                                        <td><?= $s->segmentasi; ?></td>
+                                                        <td><?= $s->sub_segment; ?></td>
+                                                        <td>
+                                                            <div class="d-inline-flex gap-1">
+                                                                <a href="<?= base_url('seqclose/edit/' . $s->id); ?>" class="btn btn-warning btn-sm">Edit</a>
+                                                                <a href="#" data-href="<?= base_url('seqclose/delete/' . $s->id); ?>" class="btn btn-danger btn-sm tombol-hapus">Hapus</a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php else : ?>
+                                                <tr>
+                                                    <td colspan="4" class="text-center">Tidak ada data.</td>
+                                                </tr>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div> <!-- end table-responsive -->
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!--end::Table Data-->
             </div>
-            <!--end::Table Data-->
         </div>
-    </div>
+        <!--end::Main Content-->
 </main>

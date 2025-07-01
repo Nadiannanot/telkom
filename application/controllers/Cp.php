@@ -8,10 +8,11 @@ class Cp extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-
-		if (empty($this->session->userdata('user_login'))) {
-			$this->session->set_flashdata('toastr-error', 'Anda belum login');
-			redirect('login', 'refresh');
+		if (!$this->session->userdata('email')) {
+			redirect('auth');
+		}
+		if ($this->session->userdata('role_id') != 1) {
+			redirect('user');
 		}
 
 		$this->load->model('M_Cp', 'cp');
@@ -27,24 +28,36 @@ class Cp extends CI_Controller
 			$cp_data = $this->cp->getAllCp();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'CP',
 			'page' => 'cp/v_cp',
 			'cp' => $cp_data,
-			'keyword' => $keyword
+			'keyword' => $keyword,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('Cp/v_cp', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function add()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Tambah CP',
-			'page' => 'cp/v_addCp'
+			'page' => 'cp/v_addCp',
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('Cp/v_addcp', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postAdd()
@@ -83,13 +96,19 @@ class Cp extends CI_Controller
 			show_404();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Edit CP',
 			'page' => 'cp/v_editCp',
-			'cp' => $cp
+			'cp' => $cp,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('Cp/v_editcp', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function update()
@@ -136,25 +155,26 @@ class Cp extends CI_Controller
 		redirect('cp');
 	}
 
-	public function upload_excel()
+	public function uploadCsv()
 	{
-		if (!empty($_FILES['file_excel']['name'])) {
-			$file = $_FILES['file_excel']['tmp_name'];
+		if ($_FILES['csv_file']['name']) {
+			$file = $_FILES['csv_file']['tmp_name'];
+			$handle = fopen($file, "r");
 
-			$spreadsheet = IOFactory::load($file);
-			$sheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+			$header = fgetcsv($handle, 1000, ","); // skip header
 
-			for ($i = 2; $i <= count($sheet); $i++) {
-				$data[] = [
-					'nd_inet'    => $sheet[$i]['A'],
-					'cp_dossier' => $sheet[$i]['B']
+			while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+				$data = [
+					'nd_inet'      => $row[0],
+					'cp_dossier'      => $row[1],
+
 				];
+				$this->db->insert('db_cp', $data);
 			}
-
-			$this->db->insert_batch('db_cp', $data);
-			$this->session->set_flashdata('message', 'Data berhasil diupload!');
+			fclose($handle);
+			$this->session->set_flashdata('toastr-success', 'Upload CSV berhasil!');
 		} else {
-			$this->session->set_flashdata('error', 'File belum dipilih!');
+			$this->session->set_flashdata('toastr-error', 'File tidak ditemukan!');
 		}
 
 		redirect('cp');

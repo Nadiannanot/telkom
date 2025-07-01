@@ -18,32 +18,26 @@
     <div class="main-content col ps-0">
         <div class="p-2 pt-0">
             <h1 class="mb-2">Data Sektor</h1>
-            <nav aria-label="breadcrumb" class="mb-3">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">Master Sektor</li>
-                    <li class="breadcrumb-item active" aria-current="page"><?= $title ?></li>
-                </ol>
-            </nav>
 
             <!--begin::Top Actions-->
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
                 <!-- Search form -->
-                <form action="<?= base_url('sektor'); ?>" method="get" class="d-flex me-2 mb-2">
-                    <div class="input-group">
-                        <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
-                        <input type="text" name="keyword" class="form-control" placeholder="Search" aria-label="Search" value="<?= $this->input->get('keyword'); ?>">
-                        <button class="btn btn-primary" type="submit">Cari</button>
+                <form method="get" action="<?= base_url('sektor'); ?>" class="d-flex align-items-center" style="gap: 8px;">
+                    <div class="d-flex align-items-center border rounded px-2" style="min-width: 260px; height: 32px; background-color: white;">
+                        <i class="fas fa-search text-muted"></i>
+                        <input type="text" name="keyword" class="form-control form-control-sm border-0 shadow-none" placeholder="Search" value="<?= $this->input->get('keyword'); ?>" style="font-size: 14px; padding-left: 10px;">
                     </div>
+                    <button type="submit" class="btn btn-sm btn-primary" style="height: 32px;">Cari</button>
                 </form>
 
                 <!-- Action buttons -->
-                <div class="d-flex flex-wrap gap-2 mb-2">
-                    <a href="<?= base_url('sektor/add'); ?>" class="btn btn-primary">
+                <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+                    <a href="<?= base_url('sektor/add'); ?>" class="btn btn-primary" style="margin-right: 10px;">
                         <i class="fas fa-plus-circle"></i> Tambah
                     </a>
 
-                    <form action="<?= base_url('sektor/upload_excel'); ?>" method="post" enctype="multipart/form-data" class="d-flex flex-wrap gap-2 align-items-center">
-                        <input type="file" name="file_excel" accept=".xls,.xlsx" class="form-control" required style="max-width: 250px;">
+                    <form action="<?= base_url('sektor/uploadCsv'); ?>" method="post" enctype="multipart/form-data" class="d-flex flex-wrap gap-2 align-items-center">
+                        <input type="file" name="csv_file" accept=".csv" class="form-control" required style="max-width: 250px; margin-right: 10px;">
                         <button type="submit" class="btn btn-success">
                             <i class="fas fa-file-upload"></i> Upload CSV
                         </button>
@@ -56,20 +50,21 @@
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card card-primary">
-                        <div class="card-header">&nbsp;</div>
+                        <div class="card-header">Sektor</div>
                         <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped table-hover">
-                                    <thead class="table-light text-center align-middle">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
                                         <tr>
-                                            <th>No</th>
-                                            <th>Nama Sektor</th>
-                                            <th>Aksi</th>
+                                            <th class="text-center">No</th>
+                                            <th class="text-center">Nama Sektor</th>
+                                            <th class="text-center">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php if (!empty($sektor)) : ?>
-                                            <?php $no = 1; foreach ($sektor as $s) : ?>
+                                            <?php $no = 1;
+                                            foreach ($sektor as $s) : ?>
                                                 <tr class="text-center align-middle">
                                                     <td><?= $no++; ?></td>
                                                     <td><?= $s->sektor; ?></td>

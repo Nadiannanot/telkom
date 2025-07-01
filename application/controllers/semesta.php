@@ -8,9 +8,12 @@ class Semesta extends CI_Controller
 	public function __construct()
 	{
 		parent::__construct();
-		if (empty($this->session->userdata('user_login'))) {
-			$this->session->set_flashdata('toastr-error', 'Anda belum login');
-			redirect('login', 'refresh');
+
+		if (!$this->session->userdata('email')) {
+			redirect('auth');
+		}
+		if ($this->session->userdata('role_id') != 1) {
+			redirect('user');
 		}
 		$this->load->model('M_Semesta', 'semesta');
 		$this->load->model('M_Uslis', 'uslis'); // Untuk relasi sektor
@@ -27,26 +30,39 @@ class Semesta extends CI_Controller
 			$semesta_data = $this->semesta->getAllSemesta();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Semesta',
 			'page' => 'semesta/v_semesta',
 			'judul' => 'Data Semesta',
 			'semesta' => $semesta_data,
-			'keyword' => $keyword
+			'keyword' => $keyword,
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('semesta/v_semesta', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function add()
 	{
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Tambah Semesta',
 			'page' => 'semesta/v_addSemesta',
-			'uslis' => $this->uslis->getAllUslis()
+			'uslis' => $this->uslis->getAllUslis(),
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('semesta/v_addSemesta', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function postAdd()
@@ -109,15 +125,21 @@ class Semesta extends CI_Controller
 			show_404();
 		}
 
+		$email = $this->session->userdata('email'); // tambahkan baris ini
 		$data = [
 			'title' => 'Edit Data Semesta',
 			'judul' => 'Edit Data Semesta',
 			'page' => 'semesta/v_editSemesta',
 			'semesta' => $semesta,
-			'uslis' => $this->uslis->getAllUslis()
+			'uslis' => $this->uslis->getAllUslis(),
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
 
-		$this->load->view('layout/index', $data);
+		$this->load->view('templates/header', $data);
+		$this->load->view('templates/sidebar_admin', $data);
+		$this->load->view('templates/topbar', $data);
+		$this->load->view('semesta/v_editSemesta', $data);
+		$this->load->view('templates/footer');
 	}
 
 	public function update()
@@ -188,42 +210,32 @@ class Semesta extends CI_Controller
 		redirect('semesta');
 	}
 
-	public function upload_excel()
+	public function uploadCsv()
 	{
-		if (!empty($_FILES['file_excel']['name'])) {
-			$file = $_FILES['file_excel']['tmp_name'];
+		if ($_FILES['csv_file']['name']) {
+			$file = $_FILES['csv_file']['tmp_name'];
+			$handle = fopen($file, "r");
 
-			try {
-				$spreadsheet = IOFactory::load($file);
-				$sheet = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+			$header = fgetcsv($handle, 1000, ","); // skip header
 
-				$data = [];
-				for ($i = 2; $i <= count($sheet); $i++) {
-					if (empty($sheet[$i]['A'])) continue;
+			while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
+				$data = [
+					's_nd_inet'   			 => $row[0],
+					's_sektor'				 => $row[1],
+					's_node_id_ip' 			 => $row[2],
+					's_shelf_slot_port_onu'  => $row[3],
+					's_fiber_lenght'      	 => $row[4],
+					's_sto'  				 => $row[5],
+					's_odc'   			     => $row[6],
+					's_odp'    				 => $row[7],
 
-					$data[] = [
-						's_nd_inet' => trim($sheet[$i]['A']),
-						's_node_id_ip' => trim($sheet[$i]['B']),
-						's_shelf_slot_port_onu' => trim($sheet[$i]['C']),
-						's_fiber_lenght' => trim($sheet[$i]['D']),
-						's_sto' => trim($sheet[$i]['E']),
-						's_odc' => trim($sheet[$i]['F']),
-						's_odp' => trim($sheet[$i]['G']),
-						's_sektor' => trim($sheet[$i]['H'])
-					];
-				}
-
-				if (!empty($data)) {
-					$this->db->insert_batch('us_semesta', $data);
-					$this->session->set_flashdata('toastr-success', 'Data berhasil diupload!');
-				} else {
-					$this->session->set_flashdata('toastr-error', 'Data kosong atau tidak valid!');
-				}
-			} catch (Exception $e) {
-				$this->session->set_flashdata('toastr-error', 'Gagal membaca file Excel!');
+				];
+				$this->db->insert('us_semesta', $data);
 			}
+			fclose($handle);
+			$this->session->set_flashdata('toastr-success', 'Upload CSV berhasil!');
 		} else {
-			$this->session->set_flashdata('toastr-error', 'File belum dipilih!');
+			$this->session->set_flashdata('toastr-error', 'File tidak ditemukan!');
 		}
 
 		redirect('semesta');
