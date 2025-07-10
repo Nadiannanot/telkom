@@ -19,25 +19,28 @@
 	<div class="app-content">
 		<div class="container-fluid">
 			<div class="row mb-3">
-				<div class="col-lg-3 mb-2">
-					<a href="<?= base_url('order/tambah') ?>" class="btn btn-primary btn-sm">+ Tambah Order</a>
-				</div>
-				<div class="col-lg-9">
-					<div class="d-flex justify-content-end flex-wrap ">
-						<!-- Form Pencarian -->
-						<form method="get" action="<?= base_url('order'); ?>" class="mb-2 d-flex align-items-center" style="gap: 8px;">
-							<div class="input-group" style="min-width: 260px; height: 32px;">
+				<div class="col-lg-12">
+					<div class="d-flex justify-content-between align-items-center flex-wrap" style="gap: 16px;">
+						<!-- Search kiri -->
+						<form method="get" action="<?= base_url('order'); ?>" class="d-flex align-items-center" style="gap: 8px; min-width:320px;">
+							<div class="input-group" style="height: 32px;">
 								<span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
 								<input type="text" name="q" class="form-control form-control-sm" placeholder="Search" value="<?= $this->input->get('q'); ?>">
 							</div>
-							<button type="submit" class="btn btn-sm btn-primary" style="height: 32px;">Cari</button>
+							<button type="submit" class="btn btn-sm btn-primary" style="height: 32px; min-width:60px;">Cari</button>
 						</form>
-
-						<!-- Form Upload CSV -->
-						<form method="post" action="<?= base_url('order/uploadCsv'); ?>" enctype="multipart/form-data" class="d-flex flex-wrap align-items-center gap-2 mb-2">
-							<input type="file" name="csv_file" accept=".csv" class="form-control form-control-sm" style="max-width: 200px;">
-							<button type="submit" class="btn btn-success btn-sm" style="height: 32px;">Upload CSV</button>
-						</form>
+						<!-- Tombol kanan -->
+						<div class="d-flex align-items-center" style="gap: 12px;">
+							<a href="<?= base_url('order/tambah') ?>" class="btn btn-primary btn-sm" style="height:32px; min-width:100px;">
+								<i class="fas fa-plus"></i> Tambah
+							</a>
+							<form method="post" action="<?= base_url('order/uploadCsv'); ?>" enctype="multipart/form-data" class="d-flex align-items-center" style="gap: 8px;">
+								<input type="file" name="csv_file" accept=".csv" class="form-control form-control-sm" style="max-width: 180px;">
+								<button type="submit" class="btn btn-success btn-sm" style="height:32px; min-width:100px;">
+									<i class="fas fa-file-upload"></i> Upload CSV
+								</button>
+							</form>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -48,50 +51,54 @@
 					<div class="card card-primary">
 						<div class="card-header">Daftar Order</div>
 						<div class="card-body">
-							<table class="table table-bordered table-striped">
-								<thead>
-									<tr class="text-center">
-										<th style="white-space: nowrap;">No</th>
-										<th style="white-space: nowrap;">No Ticket</th>
-										<th style="white-space: nowrap;">Service No</th>
-										<th style="white-space: nowrap;">Reported Date</th>
-										<th style="white-space: nowrap;">Closed Date</th>
-										<th style="white-space: nowrap;">NIK Teknisi</th>
-										<th style="white-space: nowrap;">Jenis Order</th>
-										<th style="white-space: nowrap;">Segmentasi</th>
-										<th style="white-space: nowrap;">Sektor</th>
-										<th style="white-space: nowrap;">Aksi</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php if (!empty($order)) : ?>
-										<?php $no = 1;
-										foreach ($order as $row) : ?>
-											<tr>
-												<td class="text-center"><?= $no++ ?></td>
-												<td><?= $row->no_ticket ?></td>
-												<td><?= $row->service_no ?></td>
-												<td><?= $row->reported_date ?></td>
-												<td><?= $row->closed_date ?></td>
-												<td><?= $row->nik_teknisi ?></td>
-												<td><?= $row->jenis_order ?></td>
-												<td><?= $row->segmentasi ?></td>
-												<td><?= $row->sektor ?></td>
-												<td class="text-center">
-													<div class="btn-group">
-														<a href="<?= base_url('order/edit/' . $row->id) ?>" class="btn btn-warning btn-sm">Edit</a>
-														<a href="<?= base_url('order/delete/' . $row->id) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin hapus?')">Hapus</a>
-													</div>
-												</td>
-											</tr>
-										<?php endforeach; ?>
-									<?php else : ?>
-										<tr>
-											<td colspan="10" class="text-center">Tidak ada data order.</td>
+							<div class="table-responsive">
+								<table class="table table-bordered table-striped align-middle">
+									<thead>
+										<tr class="text-center align-middle">
+											<th>No</th>
+											<th>No Ticket</th>
+											<th>Service No</th>
+											<th>Reported Date</th>
+											<th>Closed Date</th>
+											<th>NIK Teknisi</th>
+											<th>Nama Teknisi</th>
+											<th>Jenis Order</th>
+											<th>Segmentasi</th>
+											<th>Sektor</th>
+											<th>Aksi</th>
 										</tr>
-									<?php endif; ?>
-								</tbody>
-							</table>
+									</thead>
+									<tbody>
+										<?php if (!empty($order)) : ?>
+											<?php $no = 1;
+											foreach ($order as $row) : ?>
+												<tr class="text-center align-middle">
+													<td><?= $no++ ?></td>
+													<td><?= $row->no_ticket ?></td>
+													<td><?= $row->service_no ?></td>
+													<td><?= $row->reported_date ?></td>
+													<td><?= $row->closed_date ?></td>
+													<td><?= $row->nik_teknisi ?></td>
+													<td><?= $row->nama_teknisi ?></td>
+													<td><?= $row->jenis_order ?></td>
+													<td><?= $row->segmentasi ?></td>
+													<td><?= $row->sektor ?></td>
+													<td>
+														<div class="btn-group">
+															<a href="<?= base_url('order/edit/' . $row->id) ?>" class="btn btn-warning btn-sm">Edit</a>
+															<a href="<?= base_url('order/delete/' . $row->id) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin hapus?')">Hapus</a>
+														</div>
+													</td>
+												</tr>
+											<?php endforeach; ?>
+										<?php else : ?>
+											<tr>
+												<td colspan="11" class="text-center">Tidak ada data order.</td>
+											</tr>
+										<?php endif; ?>
+									</tbody>
+								</table>
+							</div>
 						</div> <!-- end card-body -->
 					</div> <!-- end card -->
 				</div>

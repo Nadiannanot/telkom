@@ -52,6 +52,11 @@
                                     <span class="text-danger"><?= form_error('nik_teknisi'); ?></span>
                                 </div>
                                 <div class="mb-3">
+                                    <label class="form-label">Nama Teknisi</label>
+                                    <input type="text" name="nama_teknisi" class="form-control" value="<?= set_value('nama_teknisi', isset($order) ? $order->nama_teknisi : '') ?>">
+                                    <span class="text-danger"><?= form_error('nama_teknisi'); ?></span>
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">Jenis Order</label>
                                     <input type="text" name="jenis_order" class="form-control" value="<?= set_value('jenis_order', $order->jenis_order) ?>">
                                     <span class="text-danger"><?= form_error('jenis_order'); ?></span>

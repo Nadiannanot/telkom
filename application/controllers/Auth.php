@@ -43,8 +43,8 @@ class Auth extends CI_Controller
 		if ($user) {
 			if ($user['is_active'] == 1) {
 				if (password_verify($password, $user['password'])) {
-					
-					
+
+
 					$data = [
 						'email' => $user['email'],
 						'role_id' => $user['role_id'],
@@ -100,16 +100,48 @@ class Auth extends CI_Controller
 				'foto' => 'default.jpg',
 				'password' => password_hash($this->input->post('password1'), PASSWORD_DEFAULT),
 				'role_id' => 2,
-				'is_active' => 1,
+				'is_active' => 0,
 				'createdAt' => date('Y-m-d H:i:s'),
 				'updatedAt' => date('Y-m-d H:i:s')
 			];
 
 			$this->db->insert('user', $data);
+
+			$this->_sendEmail($data['email'], 'activate');
+
 			$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Akun berhasil dibuat! Silakan login.</div>');
 			redirect('auth');
 		}
 	}
+
+	private function _sendEmail($email, $type)
+	{
+		$config = [
+			'protocol' => 'smtp',
+			'smtp_host' => 'ssl://smtp.gmail.com',
+			'smtp_port' => 465,
+			'smtp_user' => 'tegaltelkom848@gmail.com',
+			'smtp_pass' => 'your_app_password_here', // Gunakan App Password
+			'mailtype' => 'html',
+			'charset' => 'utf-8',
+			'newline' => "\r\n",
+		];
+
+		$this->load->library('email', $config);
+		$this->email->from('tegaltelkom848@gmail.com', 'Tegal Telkom');
+		$this->email->to($email); // Kirim ke email yang didaftarkan
+
+		$this->email->subject('Account Activation');
+		$this->email->message('Klik link berikut untuk mengaktifkan akun Anda: <a href="' . base_url() . 'auth/activate?email=' . urlencode($email) . '">Aktivasi Akun</a>');
+
+		if ($this->email->send()) {
+			return true;
+		} else {
+			echo $this->email->print_debugger(['headers']);
+			die;
+		}
+	}
+
 
 	public function valid_nik($nik)
 	{
@@ -127,3 +159,4 @@ class Auth extends CI_Controller
 		redirect('auth');
 	}
 }
+// End of file Auth.php

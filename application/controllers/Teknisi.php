@@ -10,6 +10,7 @@ class Teknisi extends CI_Controller
         if (!$this->session->userdata('email')) {
             redirect('auth');
         }
+
         if ($this->session->userdata('role_id') != 1) {
             redirect('user');
         }
@@ -24,12 +25,13 @@ class Teknisi extends CI_Controller
         if ($keyword) {
             $this->db->like('nik_teknisi', $keyword);
         }
-        $email = $this->session->userdata('email'); // tambahkan baris ini
+
+        $email = $this->session->userdata('email');
         $data = [
-            'title' => 'Data Teknisi',
-            'page'  => 'teknisi/v_teknisi',
-            'teknisi' => $this->db->get('teknisi')->result(),
-            'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+            'title'    => 'Data Teknisi',
+            'page'     => 'teknisi/v_teknisi',
+            'teknisi'  => $this->db->get('teknisi')->result(),
+            'user'     => $this->db->get_where('user', ['email' => $email])->row_array()
         ];
 
         $this->load->view('templates/header', $data);
@@ -41,11 +43,11 @@ class Teknisi extends CI_Controller
 
     public function add()
     {
-        $email = $this->session->userdata('email'); // tambahkan baris ini
+        $email = $this->session->userdata('email');
         $data = [
             'title' => 'Tambah Teknisi',
             'page'  => 'teknisi/v_addTeknisi',
-            'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+            'user'  => $this->db->get_where('user', ['email' => $email])->row_array()
         ];
 
         $this->load->view('templates/header', $data);
@@ -82,12 +84,12 @@ class Teknisi extends CI_Controller
             show_404();
         }
 
-        $email = $this->session->userdata('email'); // tambahkan baris ini
+        $email = $this->session->userdata('email');
         $data = [
             'title'   => 'Edit Teknisi',
             'page'    => 'teknisi/v_editTeknisi',
             'teknisi' => $teknisi,
-            'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+            'user'    => $this->db->get_where('user', ['email' => $email])->row_array()
         ];
 
         $this->load->view('templates/header', $data);
@@ -99,23 +101,34 @@ class Teknisi extends CI_Controller
 
     public function update()
     {
-        $nik = $this->input->post('nik_teknisi');
+        $this->form_validation->set_rules('nik_teknisi', 'NIK Teknisi', 'required');
+        $this->form_validation->set_rules('nama_teknisi', 'Nama Teknisi', 'required');
+        $this->form_validation->set_rules('sektor', 'Sektor', 'required');
+        $this->form_validation->set_rules('jenis', 'Jenis', 'required');
+        $this->form_validation->set_rules('status', 'Status', 'required');
 
-        $data = [
-            'nama_teknisi' => $this->input->post('nama_teknisi'),
-            'sektor'       => $this->input->post('sektor'),
-            'jenis'        => $this->input->post('jenis'),
-            'status'       => $this->input->post('status')
-        ];
+        $nik_lama = $this->input->post('nik_lama');
 
-        $update = $this->teknisi->update($nik, $data);
+        if ($this->form_validation->run() == FALSE) {
+            $this->edit($nik_lama);
+        } else {
+            $data = [
+                'nik_teknisi'  => $this->input->post('nik_teknisi'),
+                'nama_teknisi' => $this->input->post('nama_teknisi'),
+                'sektor'       => $this->input->post('sektor'),
+                'jenis'        => $this->input->post('jenis'),
+                'status'       => $this->input->post('status')
+            ];
 
-        $this->session->set_flashdata(
-            $update ? 'toastr-success' : 'toastr-error',
-            $update ? 'Data berhasil diubah!' : 'Data gagal diubah!'
-        );
+            $update = $this->teknisi->update($nik_lama, $data);
 
-        redirect('teknisi');
+            $this->session->set_flashdata(
+                $update ? 'toastr-success' : 'toastr-error',
+                $update ? 'Data berhasil diubah!' : 'Data gagal diubah!'
+            );
+
+            redirect('teknisi');
+        }
     }
 
     public function delete($nik)
@@ -132,7 +145,7 @@ class Teknisi extends CI_Controller
 
     public function uploadCsv()
     {
-        if ($_FILES['csv_file']['name']) {
+        if (!empty($_FILES['csv_file']['name'])) {
             $file = $_FILES['csv_file']['tmp_name'];
             $handle = fopen($file, "r");
 
@@ -140,15 +153,16 @@ class Teknisi extends CI_Controller
 
             while (($row = fgetcsv($handle, 1000, ",")) !== FALSE) {
                 $data = [
-                    'nik_teknisi'      => $row[0],
-                    'nama_teknisi'      => $row[1],
-                    'sektor'            => $row[2],
-                    'jenis'             => $row[3],
-                    'status'             => $row[4],
-
+                    'nik_teknisi'  => $row[0],
+                    'nama_teknisi' => $row[1],
+                    'sektor'       => $row[2],
+                    'jenis'        => $row[3],
+                    'status'       => $row[4],
                 ];
+
                 $this->db->insert('teknisi', $data);
             }
+
             fclose($handle);
             $this->session->set_flashdata('toastr-success', 'Upload CSV berhasil!');
         } else {

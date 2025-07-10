@@ -27,3 +27,4 @@ class M_Teknisi extends CI_Model {
         return $this->db->delete($this->table);
     }
 }
+// End of file M_Teknisi.php

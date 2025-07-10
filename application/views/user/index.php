@@ -3,7 +3,7 @@
 	<!-- Page Heading -->
 	<h1 class="h3 mb-4 text-gray-800"><?= $title; ?></h1>
 
-	<div class="card mb-3" style="max-width: 540px;">
+	<div class="card mb-3 col-lg-5">
 		<div class="row g-0">
 			<div class="col-md-4">
 				<img src="<?= base_url('assets/img/profile/') . $user['foto']; ?>" class="img-fluid rounded-start">

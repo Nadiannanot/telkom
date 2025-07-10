@@ -5,7 +5,7 @@
 	<a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= base_url('admin'); ?>">
 
 		<div class="sidebar-brand-icon rotate-n-15">
-			<i class="fa-solid fa-wifi"></i>
+			<i class="fas fa-home"></i>
 		</div>
 		<div class="sidebar-brand-text mx-2"> TELKOM AKSES TEGAL </div>
 	</a>
@@ -13,74 +13,48 @@
 	<!-- Divider -->
 	<hr class="sidebar-divider ">
 
-	<!-- Heading -->
-	<div class="sidebar-heading">
-		ADMINISTRATOR
-	</div>
+	<!-- Query Menu -->
+	<?php
+	$role_id = $this->session->userdata('role_id');
+	$queryMenu = "SELECT `user_menu`.`id`, `user_menu`.`menu`
+				  FROM `user_menu` 
+				  JOIN `user_access_menu`
+				  ON `user_menu`.`id` = `user_access_menu`.`menu_id`
+				  WHERE `user_access_menu`.`role_id` = $role_id
+				  ORDER BY `user_menu`.`id` ASC";
 
-	<!-- Nav Item - Dashboard -->
-	<li class="nav-item">
-		<a class="nav-link" href="<?= base_url('admin'); ?>">
+	$menu = $this->db->query($queryMenu)->result_array();
 
-			<i class="fas fa-fw fa-tachometer-alt"></i>
-			<span>Dashboard</span></a>
-	</li>
+	?>
 
-	<!-- Divider -->
-	<hr class="sidebar-divider">
-
-	<!-- Heading -->
-	<div class="sidebar-heading">
-		OPERASIONAL
-	</div>
-
-	<!-- Nav Item - Pages Collapse Menu -->
-	<li class="nav-item">
-		<a class="nav-link collapsed" href=" ?= base_url('') ?> " data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" style="text-decoration: none; display: flex; align-items: center;">
-			<i class="fa-solid fa-pen-fancy"></i>
-			<span>MASTER OPERASIONAL</span>
-		</a>
-
-		<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-			<div class="bg-white py-2 collapse-inner rounded">
-				<!-- <h6 class="collapse-header">Custom Components:</h6> -->
-				<a class="collapse-item" href="<?= base_url('order') ?>">Data Order</a>
-				<a class="collapse-item" href="<?= base_url('seqclose') ?>">Data Segment Close</a>
-				<a class="collapse-item" href="<?= base_url('teknisi') ?>">Data Teknisi</a>
-				<a class="collapse-item" href="<?= base_url('jadwal') ?>">Data Jadwal Operasi</a>
-				<a class="collapse-item" href="<?= base_url('sektor') ?>">Data Sektor</a>
-			</div>
+	<!-- LOOPING MENU -->
+	<?php foreach ($menu as $m) : ?>
+		<div class="sidebar-heading">
+			<?= $m['menu']; ?>
 		</div>
-	</li>
 
-	<!-- Divider -->
-	<hr class="sidebar-divider">
+		<!-- SIAPKAN SUB-MENU SESUAI MENU -->
+		<?php
+		$menuId = $m['id'];
+		$querySubMenu = "SELECT * FROM `user_sub_menu` 
+                     JOIN `user_menu` ON `user_sub_menu`.`menu_id` = `user_menu`.`id`
+                     WHERE `user_sub_menu`.`menu_id` = $menuId
+                     AND `user_sub_menu`.`is_active` = 1";
+		$subMenu = $this->db->query($querySubMenu)->result_array();
+		?>
+		<?php foreach ($subMenu as $sm) : ?>
 
-	<!-- Heading -->
-	<div class="sidebar-heading">
-		UNSPEC
-	</div>
-	<!-- Nav Item - Pages Collapse Menu -->
-	<li class="nav-item">
-		<a class="nav-link collapsed" href=" ?= base_url('') ?> " data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo" style="text-decoration: none; display: flex; align-items: center;">
-			<i class="fa-solid fa-poo-storm"></i>
-			<span>MASTER UNSPEC</span>
-		</a>
+			<li class="nav-item <?= ($title == $sm['title']) ? 'active' : ''; ?>">
+			<a class="nav-link pb-0" href="<?= base_url($sm['url']); ?>">
+				<i class="<?= $sm['icon']; ?>"></i>
+				<span><?= $sm['title']; ?></span>
+			</a>
 
-		<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-			<div class="bg-white py-2 collapse-inner rounded">
-				<!-- <h6 class="collapse-header">Custom Components:</h6> -->
-				<a class="collapse-item" href="<?= base_url('uslis') ?>">Data STO </a>
-				<a class="collapse-item" href="<?= base_url('semesta') ?>">Data UNSPEC</a>
-				<a class="collapse-item" href="<?= base_url('cp') ?>">Kontak Person</a>
-				<a class="collapse-item" href="<?= base_url('saldo') ?>">Saldo Harian</a>
-				<a class="collapse-item" href="<?= base_url('tsel') ?>">Daftar Tsel</a>
-				<a class="collapse-item" href="<?= base_url('ibooster') ?>">Monitoring Ibooster</a>
-			</div>
-		</div>
-	</li>
-	<!-- Divider -->
-	<hr class="sidebar-divider d-none d-md-block">
+			</li>
+		<?php endforeach; ?>
+
+		<hr class="sidebar-divider mt-3">
+	<?php endforeach; ?>
 
 	<!-- Sidebar Toggler (Sidebar) -->
 	<div class="text-center d-none d-md-inline">

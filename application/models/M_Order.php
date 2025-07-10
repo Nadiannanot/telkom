@@ -35,6 +35,7 @@ class M_Order extends CI_Model
 		$this->db->like('no_ticket', $q);
 		$this->db->or_like('service_no', $q);
 		$this->db->or_like('nik_teknisi', $q);
+		$this->db->or_like('nama_teknisi', $q);
 		return $this->db->get('tb_order')->result();
 	}
 }

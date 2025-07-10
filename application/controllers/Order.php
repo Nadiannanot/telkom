@@ -69,6 +69,9 @@ class Order extends CI_Controller
 		$this->form_validation->set_rules('nik_teknisi', 'NIK Teknisi', 'required', [
 			'required' => 'NIK Teknisi harus diisi!'
 		]);
+		$this->form_validation->set_rules('nama_teknisi', 'Nama Teknisi', 'required', [
+			'required' => 'Nama Teknisi harus diisi!'
+		]);
 		$this->form_validation->set_rules('jenis_order', 'Jenis Order', 'required', [
 			'required' => 'Jenis Order harus diisi!'
 		]);
@@ -89,6 +92,7 @@ class Order extends CI_Controller
 				'reported_date' => $this->input->post('reported_date'),
 				'closed_date'   => $this->input->post('closed_date'),
 				'nik_teknisi'   => $this->input->post('nik_teknisi'),
+				'nama_teknisi'  => $this->input->post('nama_teknisi'),
 				'jenis_order'   => $this->input->post('jenis_order'),
 				'segmentasi'    => $this->input->post('segmentasi'),
 				'sektor'        => $this->input->post('sektor')
@@ -155,6 +159,7 @@ class Order extends CI_Controller
 				'reported_date' => $this->input->post('reported_date'),
 				'closed_date'   => $this->input->post('closed_date'),
 				'nik_teknisi'   => $this->input->post('nik_teknisi'),
+				'nama_teknisi'  => $this->input->post('nama_teknisi'),
 				'jenis_order'   => $this->input->post('jenis_order'),
 				'segmentasi'    => $this->input->post('segmentasi'),
 				'sektor'        => $this->input->post('sektor')
@@ -186,9 +191,10 @@ class Order extends CI_Controller
 					'reported_date' => $row[2],
 					'closed_date'   => $row[3],
 					'nik_teknisi'   => $row[4],
-					'jenis_order'   => $row[5],
-					'segmentasi'    => $row[6],
-					'sektor'        => $row[7]
+					'nama_teknisi'  => $row[5], 
+					'jenis_order'   => $row[6],
+					'segmentasi'    => $row[7],
+					'sektor'        => $row[8]
 				];
 				$this->order->insertOrder($data);
 			}
