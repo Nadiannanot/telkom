@@ -17,7 +17,6 @@ class Userteknisi extends CI_Controller
 
         $this->load->model('M_Userteknisi', 'userteknisi');
         $this->load->model('M_Teknisi', 'teknisi');
-
     }
 
     public function index()
@@ -41,7 +40,7 @@ class Userteknisi extends CI_Controller
         ];
 
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/sidebar_user', $data);
         $this->load->view('templates/topbar', $data);
         $this->load->view('userteknisi/v_userteknisi', $data);
         $this->load->view('templates/footer');
@@ -64,7 +63,7 @@ class Userteknisi extends CI_Controller
         ];
 
         $this->load->view('templates/header', $data);
-        $this->load->view('templates/sidebar', $data);
+        $this->load->view('templates/sidebar_user', $data);
         $this->load->view('templates/topbar', $data);
         $this->load->view('userteknisi/v_editUserteknisi', $data);
         $this->load->view('templates/footer');
