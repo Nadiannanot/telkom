@@ -34,7 +34,14 @@
 						</div>
 						<div class="form-group">
 							<label for="sektor">Sektor</label>
-							<input type="text" name="sektor" class="form-control" id="sektor" value="<?= set_value('sektor'); ?>">
+							<select name="sektor" class="form-control" id="sektor">
+								<option value="">-- Pilih Sektor --</option>
+								<?php foreach ($sektor as $s) : ?>
+									<option value="<?= $s['sektor']; ?>" <?= set_select('sektor', $s['sektor']); ?>>
+										<?= $s['sektor']; ?>
+									</option>
+								<?php endforeach; ?>
+							</select>
 							<small class="text-danger"><?= form_error('sektor'); ?></small>
 						</div>
 						<div class="form-group">

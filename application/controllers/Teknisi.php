@@ -45,9 +45,10 @@ class Teknisi extends CI_Controller
     {
         $email = $this->session->userdata('email');
         $data = [
-            'title' => 'Tambah Teknisi',
-            'page'  => 'teknisi/v_addTeknisi',
-            'user'  => $this->db->get_where('user', ['email' => $email])->row_array()
+            'title'  => 'Tambah Teknisi',
+            'page'   => 'teknisi/v_addTeknisi',
+            'user'   => $this->db->get_where('user', ['email' => $email])->row_array(),
+            'sektor' => $this->db->get('sektor')->result_array() // Tambahkan baris ini
         ];
 
         $this->load->view('templates/header', $data);
