@@ -19,16 +19,16 @@ class Order extends CI_Controller
 	{
 		$q = $this->input->get('q');
 		if ($q) {
-			$order = $this->order->searchOrder($q);
+			$order = $this->order->searchOrderWithRelasi($q); // Buat method ini jika ingin search pakai join
 		} else {
-			$order = $this->order->getAllOrder();
+			$order = $this->order->getAllOrderWithRelasi();
 		}
-		$email = $this->session->userdata('email'); // tambahkan baris ini
+		$email = $this->session->userdata('email');
 		$data = [
 			'title' => 'Data Order',
 			'page'  => 'order/v_order',
 			'order' => $order,
-			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array()
 		];
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/sidebar_admin', $data);
@@ -39,11 +39,15 @@ class Order extends CI_Controller
 
 	public function tambah()
 	{
-		$email = $this->session->userdata('email'); // tambahkan baris ini
+		$email = $this->session->userdata('email');
 		$data = [
-			'title' => 'Tambah Order',
-			'page'  => 'order/v_addorder',
-			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+			'title'      => 'Tambah Order',
+			'page'       => 'order/v_addorder',
+			'user'       => $this->db->get_where('user', ['email' => $email])->row_array(),
+			'teknisi'    => $this->db->get('teknisi')->result_array(),
+			'jenisOrder' => $this->db->get('jenis_order')->result_array(),
+			'sektor'     => $this->db->get('sektor')->result_array(),
+			'segmentasi' => $this->db->get('seq_close')->result_array()
 		];
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/sidebar_admin', $data);
@@ -66,9 +70,9 @@ class Order extends CI_Controller
 		$this->form_validation->set_rules('closed_date', 'Closed Date', 'required', [
 			'required' => 'Closed Date harus diisi!'
 		]);
-		$this->form_validation->set_rules('nik_teknisi', 'NIK Teknisi', 'required', [
-			'required' => 'NIK Teknisi harus diisi!'
-		]);
+		// $this->form_validation->set_rules('nik_teknisi', 'NIK Teknisi', 'required', [
+		// 	'required' => 'NIK Teknisi harus diisi!'
+		// ]);
 		$this->form_validation->set_rules('nama_teknisi', 'Nama Teknisi', 'required', [
 			'required' => 'Nama Teknisi harus diisi!'
 		]);
@@ -107,12 +111,16 @@ class Order extends CI_Controller
 	{
 		$order = $this->order->getOrderById($id);
 		if (!$order) show_404();
-		$email = $this->session->userdata('email'); // tambahkan baris ini
+		$email = $this->session->userdata('email');
 		$data = [
-			'title' => 'Edit Order',
-			'page'  => 'order/v_editorder',
-			'order' => $order,
-			'user'  => $this->db->get_where('user', ['email' => $email])->row_array()
+			'title'      => 'Edit Order',
+			'page'       => 'order/v_editorder',
+			'order'      => $order,
+			'user'       => $this->db->get_where('user', ['email' => $email])->row_array(),
+			'teknisi'    => $this->db->get('teknisi')->result_array(),
+			'jenisOrder' => $this->db->get('jenis_order')->result_array(),
+			'sektor'     => $this->db->get('sektor')->result_array(),
+			'segmentasi' => $this->db->get('seq_close')->result_array()
 		];
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/sidebar_admin', $data);
@@ -191,7 +199,7 @@ class Order extends CI_Controller
 					'reported_date' => $row[2],
 					'closed_date'   => $row[3],
 					'nik_teknisi'   => $row[4],
-					'nama_teknisi'  => $row[5], 
+					'nama_teknisi'  => $row[5],
 					'jenis_order'   => $row[6],
 					'segmentasi'    => $row[7],
 					'sektor'        => $row[8]

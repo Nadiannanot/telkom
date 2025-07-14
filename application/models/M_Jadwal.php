@@ -38,4 +38,13 @@ class M_Jadwal extends CI_Model
 		$this->db->or_like('status', $keyword);
 		return $this->db->get('jadwal')->result();
 	}
+
+	public function getAllJadwalWithTeknisi()
+	{
+		$sql = "SELECT jadwal.*, teknisi.nama_teknisi, teknisi.sektor AS sektor_teknisi, teknisi.status AS status_teknisi
+				FROM jadwal
+				LEFT JOIN teknisi
+				ON jadwal.nik COLLATE utf8mb4_0900_ai_ci = teknisi.nik_teknisi COLLATE utf8mb4_0900_ai_ci";
+		return $this->db->query($sql)->result();
+	}
 }
