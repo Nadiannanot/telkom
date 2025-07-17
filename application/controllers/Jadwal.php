@@ -103,6 +103,7 @@ class Jadwal extends CI_Controller
 			'title'  => 'Edit Jadwal',
 			'page'   => 'jadwal/v_editJadwal',
 			'jadwal' => $jadwal,
+			'teknisi'  => $this->db->get('teknisi')->result_array(), // <-- tambahkan baris ini
 			'user'  => $this->db->get_where('user', ['email' => $email])->row_array(), // perbaiki baris ini
 			'sektor' => $this->db->get('sektor')->result_array()
 		];

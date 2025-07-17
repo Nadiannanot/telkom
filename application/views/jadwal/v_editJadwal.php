@@ -27,13 +27,13 @@
 						<div class="card-header">Edit Jadwal</div>
 						<div class="card-body">
 							<form method="post" action="<?= base_url('jadwal/update'); ?>">
-								<input type="hidden" name="id" value="<?= $jadwal->id ?>">
+								<input type="hidden" name="id_jadwal" value="<?= $jadwal->id ?>">
 								<div class="mb-3">
 									<label class="form-label">NIK Teknisi</label>
 									<select name="nik" id="nik" class="form-control">
 										<option value="">Pilih NIK Teknisi</option>
 										<?php foreach ($teknisi as $t) : ?>
-											<option value="<?= $t['nik_teknisi']; ?>" <?= set_select('nik', $t['nik_teknisi'], (isset($jadwal) && $jadwal->nik == $t['nik_teknisi'])); ?>>
+											<option value="<?= $t['nik_teknisi']; ?>" <?= set_select('nik', $t['nik_teknisi'], $jadwal->nik == $t['nik_teknisi']); ?>>
 												<?= $t['nik_teknisi']; ?> - <?= $t['nama_teknisi']; ?>
 											</option>
 										<?php endforeach; ?>
@@ -47,22 +47,26 @@
 								</div>
 								<div class="mb-3">
 									<label class="form-label">Status</label>
-									<input type="text" name="status" class="form-control" value="<?= set_value('status', $jadwal->status); ?>">
+									<select name="status" class="form-control">
+										<option value="">Pilih Status</option>
+										<option value="Aktif" <?= set_select('status', 'aktif', $jadwal->status == 'aktif'); ?>>aktif</option>
+										<option value="nonAktif" <?= set_select('status', 'nonaktif', $jadwal->status == 'nonaktif'); ?>>nonaktif</option>
+									</select>
 									<span class="text-danger"><?= form_error('status'); ?></span>
 								</div>
 								<div class="mb-3">
 									<label class="form-label">Sektor</label>
-									<select name="s_sektor" class="form-control">
+									<select name="sektor" class="form-control">
 										<option value="">Pilih Sektor</option>
 										<?php foreach ($sektor as $s) : ?>
-											<option value="<?= $s['sektor']; ?>" <?= set_select('s_sektor', $s['sektor'], $semesta->s_sektor == $s['sektor']); ?>>
+											<option value="<?= $s['sektor']; ?>" <?= set_select('sektor', $s['sektor'], $jadwal->sektor == $s['sektor']); ?>>
 												<?= $s['sektor']; ?>
 											</option>
 										<?php endforeach; ?>
 									</select>
-									<span class="text-danger"><?= form_error('s_sektor'); ?></span>
+									<span class="text-danger"><?= form_error('sektor'); ?></span>
 								</div>
-								<button type="submit" class="btn btn-primary">Update</button>
+								<button type="submit" class="btn btn-success">Update</button>
 								<a href="<?= base_url('jadwal'); ?>" class="btn btn-secondary">Kembali</a>
 							</form>
 						</div>

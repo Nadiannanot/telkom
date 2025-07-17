@@ -54,7 +54,9 @@ class Tsel extends CI_Controller
 		$data = [
 			'title' => 'Tambah Tsel',
 			'page'  => 'tsel/v_addTsel',
-			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array(), // perbaiki baris ini
+			'nd_inet' => $this->db->get('db_cp')->result_array()
+
 		];
 
 

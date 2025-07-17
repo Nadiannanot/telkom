@@ -13,6 +13,14 @@ class M_Tsel extends CI_Model
     {
         return $this->db->insert('tsel', $data);
     }
+    public function getTsel()
+    {
+        $this->db->select('db_cp.nd_inet');
+        $this->db->from('db_cp');
+        $this->db->join('tsel', 'tsel.nd_inet = db_cp.nd_inet', 'inner');
+        $this->db->group_by('db_cp.nd_inet'); // Hindari duplikat
+        return $this->db->get()->result_array();
+    }
 
     public function getTselById($id)
     {

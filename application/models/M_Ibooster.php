@@ -24,7 +24,13 @@ class M_Ibooster extends CI_Model
         $this->db->where('no', $id);
         return $this->db->update('ibooster', $data);
     }
-
+    public function getinet (){
+        $this->db->select('db_cp.nd_inet');
+        $this->db->from('db_cp');
+        $this->db->join('ibooster', 'ibooster.nd_inet = db_cp.nd_inet', 'inner');
+        $this->db->group_by('db_cp.nd_inet'); // Hindari duplikat
+        return $this->db->get()->result_array();
+    }
     public function deleteIbooster($id)
     {
         $this->db->where('no', $id);

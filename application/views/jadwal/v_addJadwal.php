@@ -50,14 +50,14 @@
 									<label class="form-label">Status</label>
 									<select name="status" class="form-control">
 										<option value="">Pilih Status</option>
-										<option value="Active" <?= set_select('status', 'Active'); ?>>Active</option>
-										<option value="Inactive" <?= set_select('status', 'Inactive'); ?>>Inactive</option>
+										<option value="Aktif" <?= set_select('status', 'Aktif'); ?>>Aktif</option>
+										<option value="nonAktif" <?= set_select('status', 'nonAktif'); ?>>nonAktif</option>
 									</select>
 									<span class="text-danger"><?= form_error('status'); ?></span>
 								</div>
 								<div class="mb-3">
 									<label class="form-label">Sektor</label>
-									<select name="s_sektor" class="form-control">
+									<select name="sektor" class="form-control">
 										<option value="">Pilih Sektor</option>
 										<?php foreach ($sektor as $s) : ?>
 											<option value="<?= $s['sektor']; ?>" <?= set_select('s_sektor', $s['sektor']); ?>>

@@ -43,7 +43,8 @@ class Ibooster extends CI_Controller
 		$data = [
 			'title' => 'Tambah Data Ibooster',
 			'page'  => 'ibooster/v_addIbooster',
-			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array(),
+			'nd_inet' =>  $this->db->get('db_cpgit ')->result_array()
 		];
 
 		$this->load->view('templates/header', $data);
