@@ -43,7 +43,8 @@ class Jadwal extends CI_Controller
 			'title'    => 'Tambah Jadwal',
 			'page'     => 'jadwal/v_addJadwal',
 			'user'     => $this->db->get_where('user', ['email' => $email])->row_array(),
-			'teknisi'  => $this->db->get('teknisi')->result_array() // <-- tambahkan baris ini
+			'teknisi'  => $this->db->get('teknisi')->result_array(), // <-- tambahkan baris ini
+			'sektor' => $this->db->get('sektor')->result_array()
 		];
 
 		$this->load->view('templates/header', $data);
@@ -102,7 +103,8 @@ class Jadwal extends CI_Controller
 			'title'  => 'Edit Jadwal',
 			'page'   => 'jadwal/v_editJadwal',
 			'jadwal' => $jadwal,
-			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array(), // perbaiki baris ini
+			'sektor' => $this->db->get('sektor')->result_array()
 		];
 
 		$this->load->view('templates/header', $data);

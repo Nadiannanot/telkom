@@ -54,8 +54,11 @@ class Semesta extends CI_Controller
 			'title' => 'Tambah Semesta',
 			'page' => 'semesta/v_addSemesta',
 			'uslis' => $this->uslis->getAllUslis(),
-			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array(), // perbaiki baris ini
+			'sektor' => $this->db->get('sektor')->result_array()
 		];
+		
+		$data['db_cp'] = $this->db->get('db_cp')->result_array();
 
 
 		$this->load->view('templates/header', $data);
@@ -134,6 +137,10 @@ class Semesta extends CI_Controller
 			'uslis' => $this->uslis->getAllUslis(),
 			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
 		];
+
+		$data['sektor'] = $this->db->get('sektor')->result_array();
+		$data['db_cp'] = $this->db->get('db_cp')->result_array();
+
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/sidebar_admin', $data);

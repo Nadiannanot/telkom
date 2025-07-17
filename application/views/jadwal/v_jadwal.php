@@ -53,6 +53,7 @@
 									<th>No</th>
 									<th>NIK Teknisi</th>
 									<th>Nama Teknisi</th>
+									<th>Sektor</th>
 									<th>Tanggal</th>
 									<th>Status</th>
 									<th>Aksi</th>
@@ -66,6 +67,7 @@
 											<td class="text-center"><?= $no++ ?></td>
 											<td><?= $row->nik ?></td>
 											<td><?= $row->nama_teknisi ?></td>
+											<td><?= $row->sektor ?></td>
 											<td><?= $row->tgl ?></td>
 											<td><?= $row->status ?></td>
 											<td class="text-center">

@@ -28,7 +28,7 @@
 							Tambah Jadwal
 						</div>
 						<div class="card-body">
-							<form method="post" action="<?= base_url('jadwal/tambah'); ?>">
+							<form method="post" action="<?= base_url('jadwal/postAdd'); ?>">
 								<div class="mb-3">
 									<label class="form-label">NIK Teknisi</label>
 									<select name="nik" id="nik" class="form-control">
@@ -54,6 +54,18 @@
 										<option value="Inactive" <?= set_select('status', 'Inactive'); ?>>Inactive</option>
 									</select>
 									<span class="text-danger"><?= form_error('status'); ?></span>
+								</div>
+								<div class="mb-3">
+									<label class="form-label">Sektor</label>
+									<select name="s_sektor" class="form-control">
+										<option value="">Pilih Sektor</option>
+										<?php foreach ($sektor as $s) : ?>
+											<option value="<?= $s['sektor']; ?>" <?= set_select('s_sektor', $s['sektor']); ?>>
+												<?= $s['sektor']; ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
+									<span class="text-danger"><?= form_error('s_sektor'); ?></span>
 								</div>
 								<button type="submit" class="btn btn-success">Simpan</button>
 								<a href="<?= base_url('jadwal'); ?>" class="btn btn-secondary">Kembali</a>

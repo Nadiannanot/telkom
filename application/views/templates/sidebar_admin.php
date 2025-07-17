@@ -4,7 +4,7 @@
 	<!-- Sidebar - Brand -->
 	<a class="sidebar-brand d-flex align-items-center justify-content-center" href="<?= base_url('admin'); ?>">
 
-		<div class="sidebar-brand-icon rotate-n-15">
+		<div class="sidebar-brand-icon ">
 			<i class="fas fa-home"></i>
 		</div>
 		<div class="sidebar-brand-text mx-2"> TELKOM AKSES TEGAL </div>

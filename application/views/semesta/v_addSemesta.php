@@ -33,13 +33,27 @@
 
 								<div class="mb-3">
 									<label class="form-label">ND INET</label>
-									<input type="text" name="s_nd_inet" class="form-control" value="<?= set_value('s_nd_inet'); ?>" autocomplete="off">
+									<select name="s_nd_inet" class="form-control">
+										<option value="">Pilih ND INET</option>
+										<?php foreach ($db_cp as $cp) : ?>
+											<option value="<?= $cp['nd_inet']; ?>" <?= set_select('s_nd_inet', $cp['nd_inet']); ?>>
+												<?= $cp['nd_inet']; ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
 									<span class="text-danger"><?= form_error('s_nd_inet'); ?></span>
 								</div>
-								
+
 								<div class="mb-3">
 									<label class="form-label">Sektor</label>
-									<input type="text" name="s_sektor" class="form-control" value="<?= set_value('s_sektor'); ?>" autocomplete="off">
+									<select name="s_sektor" class="form-control">
+										<option value="">Pilih Sektor</option>
+										<?php foreach ($sektor as $s) : ?>
+											<option value="<?= $s['id']; ?>" <?= set_select('s_sektor', $s['id']); ?>>
+												<?= $s['sektor']; ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
 									<span class="text-danger"><?= form_error('s_sektor'); ?></span>
 								</div>
 
@@ -63,7 +77,14 @@
 
 								<div class="mb-3">
 									<label class="form-label">STO</label>
-									<input type="text" name="s_sto" class="form-control" value="<?= set_value('s_sto'); ?>" autocomplete="off">
+									<select name="s_sto" class="form-control">
+										<option value="">Pilih STO</option>
+										<?php foreach ($uslis as $u) : ?>
+											<option value="<?= $u->id; ?>" <?= set_select('s_sto', $u->id); ?>>
+												<?= $u->nama; ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
 									<span class="text-danger"><?= form_error('s_sto'); ?></span>
 								</div>
 

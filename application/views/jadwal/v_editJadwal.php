@@ -50,6 +50,18 @@
 									<input type="text" name="status" class="form-control" value="<?= set_value('status', $jadwal->status); ?>">
 									<span class="text-danger"><?= form_error('status'); ?></span>
 								</div>
+								<div class="mb-3">
+									<label class="form-label">Sektor</label>
+									<select name="s_sektor" class="form-control">
+										<option value="">Pilih Sektor</option>
+										<?php foreach ($sektor as $s) : ?>
+											<option value="<?= $s['sektor']; ?>" <?= set_select('s_sektor', $s['sektor'], $semesta->s_sektor == $s['sektor']); ?>>
+												<?= $s['sektor']; ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
+									<span class="text-danger"><?= form_error('s_sektor'); ?></span>
+								</div>
 								<button type="submit" class="btn btn-primary">Update</button>
 								<a href="<?= base_url('jadwal'); ?>" class="btn btn-secondary">Kembali</a>
 							</form>
