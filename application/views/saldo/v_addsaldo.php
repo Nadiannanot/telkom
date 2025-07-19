@@ -39,9 +39,15 @@
 
 
 								<div class="mb-3">
-									<label class="form-label">ND Inet</label>
-									<input type="text" name="nd_inet" class="form-control" value="<?= set_value('nd_inet'); ?>" required>
-									<span class="text-danger"><?= form_error('nd_inet'); ?></span>
+									<label class="form-label">ND INET</label>
+									<select name="nd_inet" class="form-control">
+										<option value="">-- Pilih ND_INET --</option>
+										<?php foreach ($nd_inet as $row) : ?>
+											<option value="<?= $row['nd_inet'] ?>" <?= set_select('nd_inet', $row['nd_inet']); ?>>
+												<?= $row['nd_inet'] ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
 								</div>
 
 								<div class="mb-3">
@@ -74,13 +80,13 @@
 
 								<div class="mb-3">
 									<label class="form-label">SEG Close</label>
-									<input type="text" name="seg_close" class="form-control" value="<?= set_value('seg_close'); ?>">
+									<input type="number" inputmode="numeric"  name="seg_close" class="form-control" value="<?= set_value('seg_close'); ?>">
 									<span class="text-danger"><?= form_error('seg_close'); ?></span>
 								</div>
 
 								<div class="mb-3">
 									<label class="form-label">Subseg Close</label>
-									<input type="text" name="subseg_close" class="form-control" value="<?= set_value('subseg_close'); ?>">
+									<input type="number" inputmode="numeric" name="subseg_close" class="form-control" value="<?= set_value('subseg_close'); ?>">
 									<span class="text-danger"><?= form_error('subseg_close'); ?></span>
 								</div>
 
@@ -92,14 +98,25 @@
 
 								<div class="mb-3">
 									<label class="form-label">Nama Teknisi</label>
-									<input type="text" name="nama_teknisi" class="form-control" value="<?= set_value('nama_teknisi'); ?>" required>
-									<span class="text-danger"><?= form_error('nama_teknisi'); ?></span>
+									<select name="nama_teknisi" class="form-control">
+										<option value="">-- Pilih Nama Teknisi --</option>
+										<?php foreach ($nama_teknisi as $row) : ?>
+											<option value="<?= $row['nama_teknisi'] ?>" <?= set_select('nama_teknisi', $row['nama_teknisi']); ?>>
+												<?= $row['nama_teknisi'] ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
 								</div>
 
 								<div class="mb-3">
-									<label class="form-label">Jenis Teknisi</label>
-									<input type="text" name="jenis_teknisi" class="form-control" value="<?= set_value('jenis_teknisi'); ?>" required>
-									<span class="text-danger"><?= form_error('jenis_teknisi'); ?></span>
+									<label for="jenis_teknisi">jenis_teknisi</label>
+									<select name="jenis_teknisi" id="jenis_teknisi" class="form-control">
+										<option value="">-- Pilih jenis_teknisi --</option>
+										<option value="IOAN" <?= set_select('jenis_teknisi', 'IOAN'); ?>>IOAN</option>
+										<option value="BANTEK" <?= set_select('jenis_teknisi', 'BANTEK'); ?>>BANTEK</option>
+										<option value="MAINTENANCE" <?= set_select('jenis_teknisi', 'MAINTENANCE'); ?>>MAINTENANCE</option>
+										<option value="PROVISIONING" <?= set_select('jenis_teknisi', 'PROVISIONING'); ?>>PROVISIONIG</option>
+									</select>
 								</div>
 
 								<button type="submit" class="btn btn-primary">Tambah</button>

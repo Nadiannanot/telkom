@@ -56,7 +56,9 @@ class Saldo extends CI_Controller
 		$data = [
 			'title' => 'Tambah Saldo',
 			'page' => 'saldo/v_addSaldo',
-			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array(),
+			'nd_inet' => $this->saldo->get_list_nd_inet(),
+			'nama_teknisi' => $this->saldo->getnamateknisi()
 		];
 
 		$this->load->view('templates/header', $data);
@@ -140,7 +142,9 @@ class Saldo extends CI_Controller
 			'judul' => 'Edit Data Saldo',
 			'page' => 'saldo/v_editSaldo',
 			'saldo' => $saldo,
-			'user'  => $this->db->get_where('user', ['email' => $email])->row_array() // perbaiki baris ini
+			'user'  => $this->db->get_where('user', ['email' => $email])->row_array(),
+			'nd_inet' => $this->saldo->get_list_nd_inet(),
+			'nama_teknisi' => $this->saldo->getnamateknisi()
 		];
 
 		$this->load->view('templates/header', $data);

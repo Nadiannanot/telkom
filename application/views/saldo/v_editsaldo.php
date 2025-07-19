@@ -1,5 +1,4 @@
 <main class="app-main">
-	<!--begin::App Content Header-->
 	<div class="app-content-header">
 		<div class="container-fluid">
 			<div class="row">
@@ -31,8 +30,15 @@
 								<input type="hidden" name="id" value="<?= $saldo->id; ?>" required>
 
 								<div class="mb-3">
-									<label class="form-label">ND Inet</label>
-									<input type="text" name="nd_inet" class="form-control" value="<?= $saldo->nd_inet; ?>" required>
+									<label class="form-label">ND INET</label>
+									<select name="nd_inet" class="form-control" required>
+										<option value="">-- Pilih ND_INET --</option>
+										<?php foreach ($nd_inet as $row) : ?>
+											<option value="<?= $row['nd_inet']; ?>" <?= $saldo->nd_inet == $row['nd_inet'] ? 'selected' : ''; ?>>
+												<?= $row['nd_inet']; ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
 									<span class="text-danger"><?= form_error('nd_inet'); ?></span>
 								</div>
 
@@ -66,13 +72,13 @@
 
 								<div class="mb-3">
 									<label class="form-label">SEG Close</label>
-									<input type="text" name="seg_close" class="form-control" value="<?= $saldo->seg_close; ?>">
+									<input type="number" name="seg_close" class="form-control" value="<?= $saldo->seg_close; ?>">
 									<span class="text-danger"><?= form_error('seg_close'); ?></span>
 								</div>
 
 								<div class="mb-3">
 									<label class="form-label">Subseg Close</label>
-									<input type="text" name="subseg_close" class="form-control" value="<?= $saldo->subseg_close; ?>">
+									<input type="number" name="subseg_close" class="form-control" value="<?= $saldo->subseg_close; ?>">
 									<span class="text-danger"><?= form_error('subseg_close'); ?></span>
 								</div>
 
@@ -84,18 +90,30 @@
 
 								<div class="mb-3">
 									<label class="form-label">Nama Teknisi</label>
-									<input type="text" name="nama_teknisi" class="form-control" value="<?= $saldo->nama_teknisi; ?>" required>
+									<select name="nama_teknisi" class="form-control" required>
+										<option value="">-- Pilih Nama Teknisi --</option>
+										<?php foreach ($nama_teknisi as $row) : ?>
+											<option value="<?= $row['nama_teknisi']; ?>" <?= $saldo->nama_teknisi == $row['nama_teknisi'] ? 'selected' : ''; ?>>
+												<?= $row['nama_teknisi']; ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
 									<span class="text-danger"><?= form_error('nama_teknisi'); ?></span>
 								</div>
 
 								<div class="mb-3">
 									<label class="form-label">Jenis Teknisi</label>
-									<input type="text" name="jenis_teknisi" class="form-control" value="<?= $saldo->jenis_teknisi; ?>" required>
+									<select name="jenis_teknisi" class="form-control" required>
+										<option value="">-- Pilih Jenis Teknisi --</option>
+										<option value="IOAN" <?= $saldo->jenis_teknisi == 'IOAN' ? 'selected' : ''; ?>>IOAN</option>
+										<option value="BANTEK" <?= $saldo->jenis_teknisi == 'BANTEK' ? 'selected' : ''; ?>>BANTEK</option>
+										<option value="MAINTENANCE" <?= $saldo->jenis_teknisi == 'MAINTENANCE' ? 'selected' : ''; ?>>MAINTENANCE</option>
+										<option value="PROVISIONING" <?= $saldo->jenis_teknisi == 'PROVISIONING' ? 'selected' : ''; ?>>PROVISIONING</option>
+									</select>
 									<span class="text-danger"><?= form_error('jenis_teknisi'); ?></span>
 								</div>
 
 								<button type="submit" class="btn btn-primary">Simpan</button>
-
 							</form>
 						</div>
 					</div>

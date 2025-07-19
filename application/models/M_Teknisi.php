@@ -12,7 +12,10 @@ class M_Teknisi extends CI_Model {
     public function getById($nik) {
         return $this->db->get_where($this->table, ['nik_teknisi' => $nik])->row();
     }
-
+    //  public function getAllTeknisi() {
+    //     $this->db->select('nik_teknisi, nama_teknisi');
+    //     return $this->db->get($this->table)->result_array();
+    // }
     public function insert($data) {
         return $this->db->insert($this->table, $data);
     }

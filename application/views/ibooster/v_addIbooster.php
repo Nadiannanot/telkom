@@ -30,10 +30,23 @@
 						<div class="card-body">
 							<form action="<?= base_url('ibooster/postAdd'); ?>" method="POST">
 								<input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>" />
-
+								<div class="mb-3">
+									<label class="form-label">ND INET</label>
+									<!-- <input type="text" name="nd_inet" class="form-control" value="<?= set_value('nd_inet'); ?>" autocomplete="off">
+									<span class="text-danger"><?= form_error('nd_inet'); ?></span> -->
+									<select name="nd_inet" class="form-control">
+										<option value="">-- Pilih ND_INET --</option>
+										<?php foreach ($nd_inet as $row) : ?>
+											<option value="<?= $row['nd_inet']; ?>" <?= set_select('nd_inet', $row['nd_inet']); ?>>
+												<?= $row['nd_inet']; ?>
+											</option>
+										<?php endforeach; ?>
+									</select>
+								</div>
 								<?php
+
 								$fields = [
-									'nd_inet' => 'ND INET',
+									// 'nd_inet' => 'ND INET',
 									'ip_embassy' => 'IP EMBASSY',
 									'type_olt' => 'TYPE OLT',
 									'cid' => 'CID',

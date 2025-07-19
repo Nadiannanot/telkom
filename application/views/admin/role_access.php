@@ -62,7 +62,6 @@
 															data-role="<?= $role['id']; ?>"
 															data-menu="<?= $m['id']; ?>"
 															<?= $check_access($role['id'], $m['id']); ?>>
-
 													</td>
 												</tr>
 											<?php endforeach; ?>
@@ -83,3 +82,31 @@
 	</div>
 	<!--end::Main Content-->
 </main>
+
+<!-- ✅ Tambahkan jQuery jika belum -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- ✅ Script AJAX untuk ubah akses -->
+<script>
+	$(document).ready(function() {
+		$('.access-checkbox').on('click', function() {
+			const menuId = $(this).data('menu');
+			const roleId = $(this).data('role');
+			const isChecked = $(this).is(':checked');
+
+			$.ajax({
+				url: "<?= base_url('admin/changeaccess'); ?>",
+				type: 'POST',
+				data: {
+					menuId: menuId,
+					roleId: roleId,
+					isChecked: isChecked
+				},
+				success: function() {
+					// Reload agar checkbox update tampilannya
+					document.location.href = "<?= base_url('admin/roleaccess/'); ?>" + roleId;
+				}
+			});
+		});
+	});
+</script>

@@ -45,15 +45,22 @@ class M_saldo extends CI_Model
         $this->db->or_like('nama_teknisi', $keyword);
         return $this->db->get('us_saldo_harian')->result();
     }
-
+    public function getnamateknisi(){
+        return $this->db->select('nama_teknisi')->from('teknisi')->group_by('nama_teknisi')->get()->result_array();
+    }
     
-    public function getCpDataForSaldo()
+    public function getinet()
     {
-        $this->db->select('us_saldo_harian.*, db_cp.cp_dossier');
+        $this->db->select('us_saldo_harian.*, db_cp.nd_inet');
         $this->db->from('us_saldo_harian');
         $this->db->join('db_cp', 'db_cp.nd_inet = us_saldo_harian.nd_inet', 'left');
         return $this->db->get()->result();
     }
+    public function get_list_nd_inet()
+    {
+        return $this->db->select('nd_inet')->from('db_cp')->group_by('nd_inet')->get()->result_array();
+    }
+
 }
 
 /* End of file M_saldo.php */

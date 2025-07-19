@@ -47,44 +47,42 @@
 				<div class="card card-primary">
 					<div class="card-header">Data Jadwal</div>
 					<div class="card-body">
-						<div class="table-responsive">
-							<table class="table table-bordered table-striped">
-								<thead>
-									<tr>
-										<th class="text-center">No</th>
-										<th class="text-center">NIK</th>
-										<th class="text-center">Tanggal</th>
-										<th class="text-center">Sektor</th>
-										<th class="text-center">Status</th>
-										<th class="text-center">Aksi</th>
-									</tr>
-								</thead>
-								<tbody>
-									<?php if (!empty($jadwal)) : ?>
-										<?php $no = 1;
-										foreach ($jadwal as $row) : ?>
-											<tr class="text-center align-middle">
-												<td><?= $no++; ?></td>
-												<td><?= $row->nik; ?></td>
-												<td><?= date('d-m-Y', strtotime($row->tgl)); ?></td>
-												<td><?= $row->sektor; ?></td>
-												<td><?= $row->status; ?></td>
-												<td>
-													<div class="d-inline-flex gap-1">
-														<a href="<?= base_url('jadwal/edit/' . $row->id); ?>" class="btn btn-warning btn-sm">Edit</a>
-														<a href="#" data-href="<?= base_url('jadwal/delete/' . $row->id); ?>" class="btn btn-danger btn-sm tombol-hapus">Hapus</a>
-													</div>
-												</td>
-											</tr>
-										<?php endforeach; ?>
-									<?php else : ?>
+						<table class="table table-bordered table-striped">
+							<thead>
+								<tr class="text-center">
+									<th>No</th>
+									<th>NIK Teknisi</th>
+									<th>Nama Teknisi</th>
+									<th>Sektor</th>
+									<th>Tanggal</th>
+									<th>Status</th>
+									<th>Aksi</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php if (!empty($jadwal)) : ?>
+									<?php $no = 1;
+									foreach ($jadwal as $row) : ?>
 										<tr>
-											<td colspan="6" class="text-center">Tidak ada data jadwal.</td>
+											<td class="text-center"><?= $no++ ?></td>
+											<td><?= $row->nik ?></td>
+											<td><?= $row->nama_teknisi ?></td>
+											<td><?= $row->sektor ?></td>
+											<td><?= $row->tgl ?></td>
+											<td><?= $row->status ?></td>
+											<td class="text-center">
+												<a href="<?= base_url('jadwal/edit/' . $row->id) ?>" class="btn btn-warning btn-sm">Edit</a>
+												<a href="<?= base_url('jadwal/delete/' . $row->id) ?>" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin hapus?')">Hapus</a>
+											</td>
 										</tr>
-									<?php endif; ?>
-								</tbody>
-							</table>
-						</div> <!-- end table-responsive -->
+									<?php endforeach; ?>
+								<?php else : ?>
+									<tr>
+										<td colspan="6" class="text-center">Tidak ada data jadwal.</td>
+									</tr>
+								<?php endif; ?>
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
