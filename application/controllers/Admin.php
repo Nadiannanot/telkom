@@ -13,14 +13,15 @@ class Admin extends CI_Controller
 		if ($this->session->userdata('role_id') != 1) {
 			redirect('auth');
 		}
+
+		$this->load->library('form_validation');
 	}
 
 	// Dashboard
 	public function index()
 	{
-		$email = $this->session->userdata('email');
-		$data['user'] = $this->db->get_where('user', ['email' => $email])->row_array();
 		$data['title'] = 'Dashboard';
+		$data['user'] = $this->getUser();
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/sidebar_admin', $data);
@@ -29,25 +30,68 @@ class Admin extends CI_Controller
 		$this->load->view('templates/footer');
 	}
 
-	// Profile
-	public function profile()
+	// Get user session
+	private function getUser()
 	{
-		$email = $this->session->userdata('email');
-		$data['user'] = $this->db->get_where('user', ['email' => $email])->row_array();
-		$data['title'] = 'Profile Admin';
+		return $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+	}
+
+	// ======================= PROFILE ========================
+
+	public function editProfile()
+	{
+		$data['title'] = 'Edit Profile';
+		$data['user'] = $this->getUser();
 
 		$this->load->view('templates/header', $data);
 		$this->load->view('templates/sidebar_admin', $data);
 		$this->load->view('templates/topbar', $data);
-		$this->load->view('admin/profile', $data);
+		$this->load->view('admin/edit_profile', $data);
 		$this->load->view('templates/footer');
 	}
 
-	// Role Management - List
+	public function update_profile()
+	{
+		$name = $this->input->post('name');
+		$email = $this->input->post('email');
+
+		// Upload foto jika ada
+		if (!empty($_FILES['foto']['name'])) {
+			$config['allowed_types'] = 'gif|jpg|png|jpeg';
+			$config['max_size']     = '2048';
+			$config['upload_path']  = './assets/img/profile/';
+			$config['file_name']    = uniqid();
+
+			$this->load->library('upload', $config);
+
+			if ($this->upload->do_upload('foto')) {
+				$old_image = $this->db->get_where('user', ['email' => $email])->row()->foto;
+				if ($old_image != 'default.jpg' && file_exists(FCPATH . 'assets/img/profile/' . $old_image)) {
+					unlink(FCPATH . 'assets/img/profile/' . $old_image);
+				}
+				$new_image = $this->upload->data('file_name');
+				$this->db->set('foto', $new_image);
+			} else {
+				$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">' . $this->upload->display_errors() . '</div>');
+				redirect('admin/editProfile');
+				return;
+			}
+		}
+
+		$this->db->set('name', $name);
+		$this->db->where('email', $email);
+		$this->db->update('user');
+
+		$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Profile berhasil diperbarui!</div>');
+		redirect('admin/editProfile');
+	}
+
+	// ======================= ROLE ========================
+
 	public function role()
 	{
 		$data['title'] = 'Role';
-		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+		$data['user'] = $this->getUser();
 		$data['role'] = $this->db->get('user_role')->result_array();
 		$data['form_mode'] = 'list';
 
@@ -58,11 +102,10 @@ class Admin extends CI_Controller
 		$this->load->view('templates/footer');
 	}
 
-	// Add Role
 	public function addRole()
 	{
 		$data['title'] = 'Tambah Role';
-		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+		$data['user'] = $this->getUser();
 		$data['form_mode'] = 'add';
 
 		$this->form_validation->set_rules('role', 'Role', 'required|trim');
@@ -79,11 +122,10 @@ class Admin extends CI_Controller
 		}
 	}
 
-	// Edit Role
 	public function editRole($id)
 	{
 		$data['title'] = 'Edit Role';
-		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+		$data['user'] = $this->getUser();
 		$data['menu'] = $this->db->get_where('user_role', ['id' => $id])->row_array();
 		$data['form_mode'] = 'edit';
 
@@ -101,24 +143,21 @@ class Admin extends CI_Controller
 		}
 	}
 
-	// Delete Role
 	public function deleteRole($id)
 	{
 		$this->db->delete('user_role', ['id' => $id]);
 		redirect('admin/role');
 	}
 
-	// Role Access Page
 	public function roleAccess($role_id)
 	{
 		$data['title'] = 'Role Access';
-		$data['user'] = $this->db->get_where('user', ['email' => $this->session->userdata('email')])->row_array();
+		$data['user'] = $this->getUser();
 		$data['role'] = $this->db->get_where('user_role', ['id' => $role_id])->row_array();
 
-		$this->db->where('id !=', 1); // Exclude Super Admin (id = 1)
+		$this->db->where('id !=', 1); // hide superadmin
 		$data['menu'] = $this->db->get('user_menu')->result_array();
 
-		// Optional: jika kamu ingin pakai closure di view
 		$data['check_access'] = function ($role_id, $menu_id) {
 			return $this->check_access($role_id, $menu_id);
 		};
@@ -130,31 +169,14 @@ class Admin extends CI_Controller
 		$this->load->view('templates/footer');
 	}
 
-	// Fungsi untuk return true/false jika ada akses
-	private function role_access($role_id, $menu_id)
-	{
-		$query = $this->db->get_where('user_access_menu', [
-			'role_id' => $role_id,
-			'menu_id' => $menu_id
-		]);
-
-		return $query->num_rows() > 0;
-	}
-
-	// Fungsi untuk return "checked='checked'" ke view
 	public function check_access($role_id, $menu_id)
 	{
 		$this->db->where('role_id', $role_id);
 		$this->db->where('menu_id', $menu_id);
 		$result = $this->db->get('user_access_menu');
-
-		if ($result->num_rows() > 0) {
-			return "checked='checked'";
-		}
-		return '';
+		return ($result->num_rows() > 0) ? 'checked' : '';
 	}
 
-	// Aksi saat checkbox diubah
 	public function changeAccess()
 	{
 		$role_id = $this->input->post('roleId');
@@ -162,26 +184,26 @@ class Admin extends CI_Controller
 		$is_checked = $this->input->post('isChecked');
 
 		if ($is_checked == 'true' || $is_checked == 1) {
-			// Tambah akses
-			$data = [
+			$this->db->insert('user_access_menu', [
 				'role_id' => $role_id,
 				'menu_id' => $menu_id
-			];
-			$this->db->insert('user_access_menu', $data);
+			]);
 		} else {
-			// Hapus akses
-			$this->db->delete('user_access_menu', ['role_id' => $role_id, 'menu_id' => $menu_id]);
+			$this->db->delete('user_access_menu', [
+				'role_id' => $role_id,
+				'menu_id' => $menu_id
+			]);
 		}
 
 		$this->session->set_flashdata('toastr-success', 'Akses berhasil diubah.');
-
 		echo json_encode(['status' => true]);
 	}
+
+	// ======================= LOGOUT ========================
 	public function logout()
 	{
 		$this->session->unset_userdata('email');
 		$this->session->unset_userdata('role_id');
-
 		$this->session->set_flashdata('toastr-success', 'Anda telah berhasil logout.');
 		redirect('auth');
 	}
